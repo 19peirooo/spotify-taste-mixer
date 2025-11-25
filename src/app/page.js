@@ -10,7 +10,7 @@ export default function Home() {
   useEffect(() => {
     // Si ya está autenticado, redirigir al dashboard
     if (isAuthenticated()) {
-      router.push('/main/dashboard');
+      router.push('/dashboard');
     }
   }, [router]);
 

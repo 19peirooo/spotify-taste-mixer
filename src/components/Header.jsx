@@ -1,12 +1,20 @@
 "use client"
 
-import { useEffect, useState } from "react";
+import Image from "next/image";
+import { useEffect, useState, useRef } from "react";
+import AccountMenu from "./AccountMenu";
+import { logout } from "@/lib/auth";
+import { useRouter } from "next/navigation";
 
 export default function Header({title}) {
 
     const [pfp,setPfp] = useState(null)
+    const [username,setUsername] = useState("")
+    const [isOpen, setIsOpen] = useState(false)
 
-    async function getProfilePic() {
+    const router = useRouter();
+
+    async function getUserData() {
         const accessToken = localStorage.getItem('spotify_token')
         const headers = {
             'Authorization': `Bearer ${accessToken}`,
@@ -17,30 +25,52 @@ export default function Header({title}) {
         })
         const data = await response.json()
 
-        if (data.images && data.images.length > 0) {
-            return data.images[0].url;
-        } else {
-            return null
-        }
+        return {
+            imageUrl: data.images?.[0]?.url || null,
+            username: data.display_name || "Usuario No Encontrado"
+        };
     }
+
     useEffect(() => {
-        async function loadPfp() {
-            const url = await getProfilePic()
-            setPfp(url)
+        async function loadData() {
+            const data = await getUserData()
+            setPfp(data.imageUrl)
+            setUsername(data.username)
         }
-        loadPfp()
+        loadData()
     },[])
+
+    const handleLogout = () => {
+        logout()
+        router.push('/')
+    }
+
+    const handleClick = () => {
+        setIsOpen(!isOpen)
+    }
     
+    const handleClose = () => {
+        setIsOpen(false)
+    }
 
     return(
         <header className="bg-[#191414] flex items-center justify-center relative h-24 px-4">
             <h1 className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2
                  text-2xl md:text-4xl text-white font-bold">{title}</h1>
-            <img 
-                src={pfp ?? "/blank_pfp.webp"}
-                alt="Foto de Perfil"
-                className="ml-auto h-3/4 w-auto rounded-full"
-            ></img>
+            <div className="ml-auto relative">
+                <Image
+                        src={pfp ?? "/blank_pfp.webp"}
+                        alt="Foto de Perfil"
+                        width={60}
+                        height={60}
+                        className="rounded-full cursor-pointer object-cover"
+                        onClick={handleClick}
+                    />
+                
+                {isOpen && (
+                    <AccountMenu username={username} onLogout={handleLogout} onClose={handleClose}></AccountMenu>
+                )}
+            </div>
         </header>
     )
 }
