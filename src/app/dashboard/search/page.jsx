@@ -1,3 +1,4 @@
+import ArtistWidget from "@/components/widgets/ArtistWidget"
 
 export const metadata = {
     title: "Buscar",
@@ -6,6 +7,10 @@ export const metadata = {
 
 export default function SearchPage() {
 
-    return (<h1>Aqui se podra buscar canciones</h1>)
+    return (
+        <div>
+            <h1>Aqui se podra generar playlists basado en una combinacion de los filtros</h1>
+        </div>
+    )
 
 }

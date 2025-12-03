@@ -9,5 +9,3 @@ export default function PlaylistPage() {
         <h1>Aqui se mostraran las Playlist Guardadas</h1>
     );
 }
-
-PlaylistPage.metadata = metadata
