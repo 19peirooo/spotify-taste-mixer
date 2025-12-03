@@ -1,9 +1,9 @@
 "use client"
 
 import Image from "next/image";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import AccountMenu from "./AccountMenu";
-import { logout } from "@/lib/auth";
+import { getAccessToken, logout } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 
 export default function Header({title}) {
@@ -15,7 +15,7 @@ export default function Header({title}) {
     const router = useRouter();
 
     async function getUserData() {
-        const accessToken = localStorage.getItem('spotify_token')
+        const accessToken = getAccessToken()
         const headers = {
             'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json'
@@ -56,7 +56,7 @@ export default function Header({title}) {
     return(
         <header className="bg-[#191414] flex items-center justify-center relative h-24 px-4">
             <h1 className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2
-                 text-2xl md:text-4xl text-white font-bold">{title}</h1>
+                 text-2xl md:text-4xl text-white font-bold">🎵 Spotify Taste Mixer</h1>
             <div className="ml-auto relative">
                 <Image
                         src={pfp ?? "/blank_pfp.webp"}
