@@ -2,8 +2,8 @@
 import { spotifyRequest } from "@/lib/spotify"
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import SongList from "@/components/SongList";
 import { useRouter } from "next/navigation";
+import TopTracksList from "@/components/TopTracksList";
 
 
 export default function ArtistDataPage({ id }) {
@@ -53,7 +53,7 @@ export default function ArtistDataPage({ id }) {
             </div>
             <div>
                 <h1 className="text-3xl font-bold mb-2">Mejores Canciones: </h1>
-                <SongList songs={artist.top_tracks} onSelect={null}></SongList>
+                <TopTracksList songs={artist.top_tracks} onSelect={null} onFavourite={null}/>
             </div>
         </div>
     )

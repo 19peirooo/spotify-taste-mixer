@@ -20,7 +20,7 @@ export default function DebouncedSearchBar({ onSearch }) {
 
     return (
         <div className="w-full">
-            <input {...register('query')} placeholder="Introduce Nombre del Artista" className="w-full bg-[#212121] py-2 px-4 my-2"></input>
+            <input {...register('query')} placeholder="Introduce texto" className="w-full bg-[#212121] py-2 px-4 my-2"></input>
         </div>
     )
 

@@ -1,13 +1,6 @@
 import Image from "next/image"
-import { FaHeart } from "react-icons/fa";
-import { MdDelete } from "react-icons/md";
 
-export default function Song( {data, onFavourite, onDelete } ) {
-
-    const handleDelete = (e) => {
-        e.stopPropagation()
-        onDelete(data.id)
-    }
+export default function SongSearched ( {data} ) {
 
     return (
         <>
@@ -25,11 +18,6 @@ export default function Song( {data, onFavourite, onDelete } ) {
                 <p className="text-gray-300 text-sm">
                     {data.artists.map(a => a.name).join(", ")}
                 </p>
-            </div>
-
-            <div className="ml-auto flex flex-row items-center gap-3">
-                <FaHeart className="cursor-pointer" onClick={onFavourite}/>
-                <MdDelete className="cursor-pointer" onClick={handleDelete}/>
             </div>
         </>
     )

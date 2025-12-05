@@ -18,7 +18,7 @@ export default function Artist ({data, onDelete}) {
                 className="h-16 w-16 object-cover rounded-md"
             ></Image>
             <p className="flex-1 font-medium text-center">{data.name}</p>
-            <MdDelete onClick={handleDelete}/>
+            <MdDelete className="cursor-pointer" onClick={handleDelete}/>
         </>
     )
 
