@@ -72,3 +72,21 @@ export function logout() {
   localStorage.removeItem('spotify_refresh_token');
   localStorage.removeItem('spotify_token_expiration');
 }
+
+export async function refreshAccessToken() {
+  const refreshToken = localStorage.getItem('spotify_refresh_token');
+  
+  const response = await fetch('/api/refresh-token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ refresh_token: refreshToken })
+  });
+
+  const data = await response.json();
+  
+  localStorage.setItem('spotify_token', data.access_token);
+  const expirationTime = Date.now() + data.expires_in * 1000;
+  localStorage.setItem('spotify_token_expiration', expirationTime.toString());
+  
+  return data.access_token;
+}

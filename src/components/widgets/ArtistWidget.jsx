@@ -1,13 +1,50 @@
+"use client"
 
-export default function ArtistWidget() {
+import { useState } from "react"
+import DebouncedSearchBar from "../DebouncedSearchBar"
+import { spotifyRequest } from "@/lib/spotify"
+import ArtistList from "../ArtistList"
+import ArtistSearchList from "../ArtistSearchList"
+import { useRouter } from "next/navigation"
+
+
+export default function ArtistWidget({ onSelect, selectedItems, onDelete }) {
+
+    const [artists, setArtists] = useState([])
+
+    const router = useRouter()
+
+    const handleSearch = async (query) => {
+        if (!query) {
+            setArtists([])
+        } else {
+            const artist_data = await spotifyRequest(`https://api.spotify.com/v1/search?type=artist&q=${query}&limit=5`)
+            let artist_list = artist_data?.artists?.items || []
+            if (artist_list) {
+                artist_list = artist_list.map(a => ({
+                    id: a.id,
+                    name: a.name,
+                    image: a?.images[0] || null,
+                }))
+            }
+            setArtists(artist_list)
+        }
+    }
+
+    const handleArtist = (id) => {
+        router.push(`/dashboard/artists/${id}`)
+    }
 
     return (
         
-        <div>
-            <h1>Busca canciones por tu artista favorito</h1>
+        <div className="flex flex-col items-center w-full bg-[#191414] my-2 p-4 rounded-2xl">
+            <h2 className="text-2xl font-bold text-white text-center">Busca a tu artista favorito</h2>
+            <DebouncedSearchBar onSearch={handleSearch}></DebouncedSearchBar>
+            <ArtistSearchList artists={artists} onSelect={onSelect}/>
+            <h2 className="text-xl font-bold text-white">Artistas Seleccionados: </h2>
+            <ArtistList artists={selectedItems} onSelect={handleArtist} onDelete={onDelete}/>
         </div>
-        
-        
+
     )
 
 }
