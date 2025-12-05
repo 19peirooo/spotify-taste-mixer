@@ -2,7 +2,7 @@
 import { spotifyRequest } from "@/lib/spotify"
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import SongList from "./SongList";
+import SongList from "@/components/SongList";
 import { useRouter } from "next/navigation";
 
 

@@ -1,4 +1,4 @@
-import ArtistFinder from "@/components/ArtistFinder"
+import ArtistFinder from "@/app/dashboard/search/artist-search/ArtistFinder"
 
 export const metadata = {
     title: "Buscar por artistas",

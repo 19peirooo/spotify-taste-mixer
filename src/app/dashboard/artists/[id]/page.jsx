@@ -1,4 +1,4 @@
-import ArtistDataPage from "@/components/ArtistDataPage";
+import ArtistDataPage from "@/app/dashboard/artists/[id]/ArtistDataPage";
 
 export async function generateMetadata({ params }) {
   const id = await params;
