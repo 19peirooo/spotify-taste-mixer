@@ -9,11 +9,7 @@ export default function ArtistFinder() {
     const router = useRouter()
 
     const addArtist = (artist) => {
-        const exists = artists.some(a => a.id === artist.id)
-
-        if (!exists && artists.length < 5) {
-            setArtists([...artists,artist])
-        }
+        setArtists([...artists,artist])
     }
 
     const removeArtist = (artistId) => {
@@ -25,12 +21,10 @@ export default function ArtistFinder() {
     }
 
     return (
-        <div>
+        <div className="flex flex-col items-center w-full bg-[#191414] my-2 p-4 rounded-2xl">
             <ArtistWidget onSelect={addArtist} selectedItems={artists}/>
-            <div className="flex flex-col items-center w-full bg-[#191414] my-2 p-4 rounded-2xl">
-                <h2 className="text-xl font-bold text-white">Artistas Seleccionados: </h2>
-                <ArtistList artists={artists} onSelect={handleArtist} onDelete={removeArtist}/>
-            </div>
+            <h2 className="text-xl font-bold text-white">Artistas Seleccionados: </h2>
+            <ArtistList artists={artists} onSelect={handleArtist} onDelete={removeArtist}/>
         </div>
     )
 }

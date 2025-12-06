@@ -27,13 +27,22 @@ export default function ArtistWidget({ onSelect, selectedItems }) {
         }
     }
 
+    const handleSelect = (artist) => {
+        const exists = selectedItems.some(a => a.id === artist.id)
+
+        if (!exists && selectedItems.length < 5) {
+            onSelect(artist)
+        }
+
+    }
+
     return (
         
-        <div className="flex flex-col items-center w-full bg-[#191414] my-2 p-4 rounded-2xl">
+        <>
             <h2 className="text-2xl font-bold text-white text-center">Busca a tu artista favorito</h2>
             <DebouncedSearchBar onSearch={handleSearch}></DebouncedSearchBar>
             <ArtistSearchList artists={artists} onSelect={onSelect}/>
-        </div>
+        </>
 
     )
 
