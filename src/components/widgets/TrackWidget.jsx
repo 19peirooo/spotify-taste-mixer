@@ -9,6 +9,14 @@ export default function TrackWidget({ onSelect, selectedItems }) {
 
     const [songs, setSongs] = useState([])
 
+    const handleSelect = (track) => {
+        const exists = selectedItems.some(t => t.id === track.id)
+
+        if (!exists) {
+            onSelect(track)
+        }
+    }
+
     const handleSearch = async (query) => {
             if (!query) {
                 setSongs([])
@@ -20,11 +28,11 @@ export default function TrackWidget({ onSelect, selectedItems }) {
         }
 
     return (
-        <div className="flex flex-col items-center w-full bg-[#191414] my-2 p-4 rounded-2xl">
+        <>
             <h2 className="text-2xl font-bold text-white text-center">Buscar canciones</h2>
             <DebouncedSearchBar onSearch={handleSearch}></DebouncedSearchBar>
-            <SongSearchList songs={songs} onSelect={onSelect}/>
-        </div>
+            <SongSearchList songs={songs} onSelect={handleSelect}/>
+        </>
         
     )
 
