@@ -4,11 +4,13 @@ import { useState } from "react"
 import ArtistWidget from "./widgets/ArtistWidget"
 import ArtistList from "./ArtistList"
 import GenreWidget from "./widgets/GenreWidget"
+import DecadeWidget from "./widgets/DecadeWidget"
 
 export default function PlaylistGenerator() {
     const [artists, setArtists] = useState([])
     const [tracks, setTracks] = useState([])
     const [genres, setGenres] = useState([])
+    const [decades, setDecades] = useState([])
 
     const addArtist = (artist) => {
         setArtists([...artists,artist])
@@ -28,6 +30,9 @@ export default function PlaylistGenerator() {
             </div>
             <div className="flex flex-col items-center w-full bg-[#191414] rounded-2xl my-2 p-4">
                 <GenreWidget selectedItems={genres} onSelect={setGenres}/>
+            </div>
+            <div className="flex flex-col items-center w-full bg-[#191414] rounded-2xl my-2 p-4">
+                <DecadeWidget selectedItems={genres} onSelect={setGenres}/>
             </div>
         </div>
     )
