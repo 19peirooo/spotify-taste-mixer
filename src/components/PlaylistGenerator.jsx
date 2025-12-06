@@ -6,12 +6,14 @@ import ArtistList from "./ArtistList"
 import GenreWidget from "./widgets/GenreWidget"
 import DecadeWidget from "./widgets/DecadeWidget"
 import TrackWidget from "./widgets/TrackWidget"
+import PopularityWidget from "./widgets/PopularityWidget"
 
 export default function PlaylistGenerator() {
     const [artists, setArtists] = useState([])
     const [tracks, setTracks] = useState([])
     const [genres, setGenres] = useState([])
     const [decades, setDecades] = useState([])
+    const [popularity, setPopularity] = useState({min: 0, max: 100})
 
     const addArtist = (artist) => {
         setArtists([...artists,artist])
@@ -40,7 +42,7 @@ export default function PlaylistGenerator() {
                 <DecadeWidget selectedItems={decades} onSelect={setDecades}/>
             </div>
             <div className="flex flex-col items-center w-full bg-[#191414] rounded-2xl my-2 p-4">
-                <h1>Popularity Widget</h1>
+                <PopularityWidget selectedItems={popularity} onSelect={setPopularity}/>
             </div>
             <div className="flex flex-col items-center w-full bg-[#191414] rounded-2xl my-2 p-4">
                 <h1>Mood Widget</h1>
