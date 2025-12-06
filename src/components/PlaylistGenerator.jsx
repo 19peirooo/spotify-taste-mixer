@@ -15,6 +15,12 @@ export default function PlaylistGenerator() {
     const [genres, setGenres] = useState([])
     const [decades, setDecades] = useState([])
     const [popularity, setPopularity] = useState({min: 0, max: 100})
+    const [mood, setMood]= useState({
+        "energy":0,
+        "valence":0,
+        "danceability":0,
+        "acousticness":0
+    })
 
     const addArtist = (artist) => {
         setArtists([...artists,artist])
@@ -46,7 +52,7 @@ export default function PlaylistGenerator() {
                 <PopularityWidget selectedItems={popularity} onSelect={setPopularity}/>
             </div>
             <div className="flex flex-col items-center w-full bg-[#191414] rounded-2xl my-2 p-4">
-                <MoodWidget selectedItems={null} onSelect={null}/>
+                <MoodWidget selectedItems={mood} onSelect={setMood}/>
             </div>
             <div className="flex flex-col items-center w-full bg-[#191414] rounded-2xl my-2 p-4">
                 <TrackWidget selectedItems={tracks} onSelect={addTrack}/>
