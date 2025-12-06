@@ -6,7 +6,7 @@ import SongSearchList from "../SongSearchList"
 import { spotifyRequest } from "@/lib/spotify"
 import GenreList from "../GenreList"
 
-export default function GenreWidget({ onSelect, selectedItems, onDelete }) {
+export default function GenreWidget({ onSelect, selectedItems }) {
 
     const [songs, setSongs] = useState([])
     const [genres, setGenres] = useState([])

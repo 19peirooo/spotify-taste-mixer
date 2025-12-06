@@ -5,7 +5,7 @@ import { spotifyRequest } from "@/lib/spotify"
 
 import SongSearchList from "../SongSearchList"
 
-export default function TrackWidget({ onSelect, selectedItems, onDelete }) {
+export default function TrackWidget({ onSelect, selectedItems }) {
 
     const [songs, setSongs] = useState([])
 
