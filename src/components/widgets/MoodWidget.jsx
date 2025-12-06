@@ -1,11 +1,11 @@
 
-export default function MoodWidget() {
+export default function MoodWidget( {selectedItems, onSelect} ) {
 
     return (
         
-        <div>
-            <h1>Busca canciones por tu estado de animo</h1>
-        </div>
+        <>
+            <h2 className="text-2xl font-bold text-white text-center">Buscar por tu estado de animo</h2>
+        </>
         
         
     )

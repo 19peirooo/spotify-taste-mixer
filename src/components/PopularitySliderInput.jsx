@@ -16,18 +16,22 @@ export default function PopularitySliderInput ({ value, onChange }) {
     }
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col w-full gap-6">
             <label className="text-white font-semibold mb-1">
                 Popularidad Minima: {value.min}
             </label>
             <input type="range" min={0} max={100} step={1} value={value.min} onChange={handleMinChange} 
-            className="w-full h-2 bg-gray-700 rounded-lg cursor-pointer accent-[#1ed760]"></input>
+            className="w-full h-2 bg-gray-700 rounded-lg cursor-pointer
+                 appearance-none
+                 slider-thumb-green"></input>
 
             <label className="text-white font-semibold mb-1">
                 Popularidad Maxima: {value.max}
             </label>
             <input type="range" min={0} max={100} step={1} value={value.max} onChange={handleMaxChange} 
-            className="w-full h-2 bg-gray-700 rounded-lg cursor-pointer accent-[#1ed760]"></input>
+            className="w-full h-2 bg-gray-700 rounded-lg cursor-pointer
+                 appearance-none
+                 slider-thumb-green"></input>
         </div>
     )
 
