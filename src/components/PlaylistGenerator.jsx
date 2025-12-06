@@ -32,7 +32,7 @@ export default function PlaylistGenerator() {
                 <GenreWidget selectedItems={genres} onSelect={setGenres}/>
             </div>
             <div className="flex flex-col items-center w-full bg-[#191414] rounded-2xl my-2 p-4">
-                <DecadeWidget selectedItems={genres} onSelect={setGenres}/>
+                <DecadeWidget selectedItems={decades} onSelect={setDecades}/>
             </div>
         </div>
     )

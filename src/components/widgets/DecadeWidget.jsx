@@ -1,9 +1,6 @@
 "use client"
 
-import { useState } from "react"
 import DecadeList from "../DecadeList"
-import SongSearchList from "../SongSearchList"
-import { spotifyRequest } from "@/lib/spotify"
 
 export default function DecadeWidget({ onSelect, selectedItems }) {
 
