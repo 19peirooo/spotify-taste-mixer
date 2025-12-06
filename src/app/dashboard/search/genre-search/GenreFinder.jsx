@@ -1,6 +1,7 @@
 "use client"
 import GenreWidget from "@/components/widgets/GenreWidget"
 import { useState } from "react"
+import SongList from "@/components/SongList"
 
 export default function GenreFinder() {
 
@@ -21,6 +22,10 @@ export default function GenreFinder() {
     return (
         <div>
             <GenreWidget onSelect={addTrack} onDelete={removeTrack} selectedItems={tracks}/>
+            <div className="flex flex-col items-center w-full bg-[#191414] my-2 p-4 rounded-2xl">
+                <h2 className="text-2xl font-bold text-white mt-2">Canciones Seleccionadas: </h2>
+                <SongList songs={tracks} onSelect={null} onDelete={removeTrack} onFavourite={null}/>    
+            </div>
         </div>
     )
 }

@@ -2,7 +2,7 @@
 import SearchForm from "../SearchForm"
 import { useState } from "react"
 import SongSearchList from "../SongSearchList"
-import SongList from "../SongList"
+
 import { spotifyRequest } from "@/lib/spotify"
 import GenreList from "../GenreList"
 
@@ -51,8 +51,7 @@ export default function GenreWidget({ onSelect, selectedItems, onDelete }) {
                            hover:bg-[#1ed760] transition cursor-pointer shadow-md" onClick={findSongs}>Buscar Canciones</button>
             <h2 className="text-xl font-bold text-white mt-2">Canciones Encontradas: </h2>
             <SongSearchList songs={songs} onSelect={onSelect}/>
-            <h2 className="text-xl font-bold text-white mt-2">Canciones Seleccionadas: </h2>
-            <SongList songs={selectedItems} onSelect={null} onDelete={onDelete} onFavourite={null}/>
+            
         </div>  
     )
 

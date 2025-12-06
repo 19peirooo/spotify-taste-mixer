@@ -2,7 +2,7 @@
 import { useState } from "react"
 import DebouncedSearchBar from "../DebouncedSearchBar"
 import { spotifyRequest } from "@/lib/spotify"
-import SongList from "../SongList"
+
 import SongSearchList from "../SongSearchList"
 
 export default function TrackWidget({ onSelect, selectedItems, onDelete }) {
@@ -24,8 +24,6 @@ export default function TrackWidget({ onSelect, selectedItems, onDelete }) {
             <h2 className="text-2xl font-bold text-white text-center">Buscar canciones</h2>
             <DebouncedSearchBar onSearch={handleSearch}></DebouncedSearchBar>
             <SongSearchList songs={songs} onSelect={onSelect}/>
-            <h2 className="text-xl font-bold text-white mt-2">Canciones Seleccionadas: </h2>
-            <SongList songs={selectedItems} onSelect={null} onDelete={onDelete} onFavourite={null}/>
         </div>
         
     )
