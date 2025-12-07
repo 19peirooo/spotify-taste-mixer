@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { isAuthenticated, getSpotifyAuthUrl } from '@/lib/auth';
+import { spotifyRequest } from '@/lib/spotify';
 
 export default function Home() {
   const router = useRouter();
@@ -16,8 +17,6 @@ export default function Home() {
 
   const handleLogin = () => {
     window.location.href = getSpotifyAuthUrl();
-    localStorage.setItem('favourite_tracks','[]')
-    localStorage.setItem('favourite_artists','[]')
   };
 
   return (
