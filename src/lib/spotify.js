@@ -15,7 +15,7 @@ export async function generatePlaylist(preferences) {
   }
   
   // 2. Buscar por géneros
-  if (genres) {  
+  if (genres && genres.length >= 3 && genres.length <= 5) {  
     for (const genre of genres) {
       const data = await spotifyRequest(`https://api.spotify.com/v1/search?type=track&q=genre:${genre}&limit=20`)
       const track_data = data?.tracks?.items || []
@@ -48,7 +48,6 @@ export async function generatePlaylist(preferences) {
   allTracks= Array.from(
     new Map(allTracks.map(t => [t.id, t])).values()
   )
-  console.log(allTracks)
 
   //6. Filtrar por estado de animo
   if (mood) {
@@ -65,7 +64,6 @@ export async function generatePlaylist(preferences) {
     }
     allTracks = filteredTracks
   }
-  console.log(allTracks)
 
   //7. Añadir canciones del track widget
   let playlist = allTracks.slice(0,30)
