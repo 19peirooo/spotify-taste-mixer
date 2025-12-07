@@ -16,6 +16,8 @@ export default function Home() {
 
   const handleLogin = () => {
     window.location.href = getSpotifyAuthUrl();
+    localStorage.setItem('favourite_tracks','[]')
+    localStorage.setItem('favourite_artists','[]')
   };
 
   return (

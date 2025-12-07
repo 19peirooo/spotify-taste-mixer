@@ -1,12 +1,23 @@
+"use client"
 import Image from "next/image"
 import { FaHeart } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
+import { isFavouriteTrack } from "@/lib/favourites";
+import { useState } from "react";
 
 export default function Song( {data, onFavourite, onDelete } ) {
+
+    const [favourite,setFavourite] = useState(isFavouriteTrack(data))
 
     const handleDelete = (e) => {
         e.stopPropagation()
         onDelete(data.id)
+    }
+
+    const handleFavourite = (e) => {
+        e.stopPropagation()
+        onFavourite(data)
+        setFavourite(isFavouriteTrack(data))
     }
 
     return (
@@ -28,7 +39,7 @@ export default function Song( {data, onFavourite, onDelete } ) {
             </div>
 
             <div className="ml-auto flex flex-row items-center gap-3">
-                <FaHeart className="cursor-pointer" onClick={onFavourite}/>
+                <FaHeart className={`cursor-pointer ${favourite ? "text-red-500":""}`} onClick={handleFavourite}/>
                 <MdDelete className="cursor-pointer" onClick={handleDelete}/>
             </div>
         </>

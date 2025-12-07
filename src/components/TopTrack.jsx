@@ -1,7 +1,17 @@
+import { isFavouriteTrack } from "@/lib/favourites";
 import Image from "next/image"
+import { useState } from "react";
 import { FaHeart } from "react-icons/fa";
 
 export default function TopTrack({ data,onFavourite }) {
+
+    const [favourite,setFavourite] = useState(isFavouriteTrack(data))
+
+    const handleFavourite = (e) => {
+        e.stopPropagation()
+        onFavourite(data)
+        setFavourite(isFavouriteTrack(data))
+    }
 
     return (
         <>
@@ -21,7 +31,7 @@ export default function TopTrack({ data,onFavourite }) {
                 </p>
             </div>
 
-            <FaHeart className="ml-auto cursor-pointer" onClick={onFavourite}/>
+            <FaHeart className={`ml-auto cursor-pointer ${favourite ? "text-red-500":""}`} onClick={handleFavourite}/>
             
         </>
     )

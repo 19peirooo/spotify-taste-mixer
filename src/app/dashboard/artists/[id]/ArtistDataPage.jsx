@@ -4,12 +4,15 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import TopTracksList from "@/components/TopTracksList";
+import { isFavouriteArtist, toggleFavouriteArtist } from "@/lib/favourites";
+import { FaHeart } from "react-icons/fa";
 
 
 export default function ArtistDataPage({ id }) {
 
     const [artist, setArtist] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [favourite,setFavourite] = useState(false)
     const router = useRouter()
 
     useEffect(() => {
@@ -19,12 +22,19 @@ export default function ArtistDataPage({ id }) {
                 const top_tracks = await spotifyRequest(`https://api.spotify.com/v1/artists/${id}/top-tracks?market=ES`)
                 data.top_tracks = top_tracks.tracks
                 setArtist(data);
+                setFavourite(isFavouriteArtist(data))
             } finally {
                 setLoading(false);
             }
         }
         load();
     }, [id]);
+
+    const handleFavourite = (e) => {
+        e.stopPropagation()
+        toggleFavouriteArtist(artist)
+        setFavourite(isFavouriteArtist(artist))
+    }
 
     if (loading) return <p>Cargando artista…</p>;
 
@@ -45,7 +55,13 @@ export default function ArtistDataPage({ id }) {
                     className="h-48 w-48 object-cover rounded-md"
                 ></Image>
                 <div>
-                    <h1 className="text-3xl font-bold mb-2">{artist.name}</h1>
+                    <div className="flex items-center gap-2">
+                        <h1 className="text-3xl font-bold mb-2">{artist.name}</h1>
+                        <FaHeart
+                            className={`cursor-pointer ${favourite ? "text-red-500" : ""}`}
+                            onClick={handleFavourite}
+                        />
+                    </div>
                     <p>Seguidores: {artist.followers?.total || 0}</p>
                     <p>Popularidad: {artist.popularity}</p>
                     <p>Generos: {artist.genres.join(", ") || "N/A"}</p>
@@ -53,7 +69,7 @@ export default function ArtistDataPage({ id }) {
             </div>
             <div>
                 <h1 className="text-3xl font-bold mb-2">Mejores Canciones: </h1>
-                <TopTracksList songs={artist.top_tracks} onSelect={null} onFavourite={null}/>
+                <TopTracksList songs={artist.top_tracks} onSelect={null} />
             </div>
         </div>
     )

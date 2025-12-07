@@ -149,7 +149,7 @@ export default function PlaylistGenerator() {
             <div className="flex flex-col items-center w-full  bg-green-900 rounded-2xl my-2 p-4 border border-[#1ed760]">
                 <TrackWidget selectedItems={tracks} onSelect={addTrack}/>
                 <h2 className="text-xl font-bold text-white">Canciones Seleccionadas: </h2>
-                <SongList songs={tracks} onSelect={null} onDelete={removeTrack} onFavourite={null}/>
+                <SongList songs={tracks} onSelect={null} onDelete={removeTrack}/>
             </div>}
 
             <div className="flex w-full justify-center">
@@ -165,7 +165,7 @@ export default function PlaylistGenerator() {
                 <h1 className="text-2xl font-bold text-white text-center my-2 p-4 w-full rounded-2xl"> Playlist </h1>
                 {playlist.length === 0 
                     ? <p className="text-white text-center">Playlist vacía</p>
-                    :<SongList songs={playlist} onSelect={null} onDelete={removePlaylistTrack} onFavourite={null}/>}
+                    :<SongList songs={playlist} onSelect={null} onDelete={removePlaylistTrack} />}
             </div>
         </div>
     )

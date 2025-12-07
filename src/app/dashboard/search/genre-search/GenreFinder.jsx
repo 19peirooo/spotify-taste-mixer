@@ -32,7 +32,7 @@ export default function GenreFinder() {
             <button className="mt-4 px-4 py-2 bg-[#1DB954] text-black font-semibold rounded-xl 
                            hover:bg-[#1ed760] transition cursor-pointer shadow-md" onClick={findSongs}>Buscar Canciones</button>
             <h2 className="text-2xl font-bold text-white mt-2">Canciones Encontradas: </h2>
-            <SongList songs={tracks} onSelect={null} onDelete={removeTrack} onFavourite={null}/>    
+            <SongList songs={tracks} onSelect={null} onDelete={removeTrack} />    
         </div>
     )
 }

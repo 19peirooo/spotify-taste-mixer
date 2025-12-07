@@ -19,7 +19,7 @@ export default function TrackFinder() {
         <div className="flex flex-col items-center w-full bg-[#191414] my-2 p-4 rounded-2xl">
             <TrackWidget onSelect={addTrack} selectedItems={tracks}/>
             <h2 className="text-2xl font-bold text-white mt-2">Canciones Seleccionadas: </h2>
-            <SongList songs={tracks} onSelect={null} onDelete={removeTrack} onFavourite={null}/>    
+            <SongList songs={tracks} onSelect={null} onDelete={removeTrack} />    
         </div>
     )
 }
