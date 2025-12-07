@@ -71,6 +71,9 @@ export function logout() {
   localStorage.removeItem('spotify_token');
   localStorage.removeItem('spotify_refresh_token');
   localStorage.removeItem('spotify_token_expiration');
+  localStorage.removeItem('favourite_artists')
+  localStorage.removeItem('favourite_tracks')
+  localStorage.removeItem('playlists')
 }
 
 export async function refreshAccessToken() {

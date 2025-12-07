@@ -1,3 +1,4 @@
+import PlaylistClientPage from "./PlaylistClientPage";
 
 export const metadata = {
     title: "Playlist",
@@ -6,6 +7,6 @@ export const metadata = {
 
 export default function PlaylistPage() {
     return (
-        <h1>Aqui se mostraran las Playlist Guardadas</h1>
+        <PlaylistClientPage/>
     );
 }

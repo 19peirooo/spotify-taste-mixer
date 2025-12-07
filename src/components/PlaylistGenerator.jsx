@@ -9,7 +9,9 @@ import TrackWidget from "./widgets/TrackWidget"
 import PopularityWidget from "./widgets/PopularityWidget"
 import MoodWidget from "./widgets/MoodWidget"
 import SongList from "./SongList"
-import { generatePlaylist } from "@/lib/spotify"
+import { generatePlaylist, spotifyRequest } from "@/lib/spotify"
+import SubmitForm from "./SubmitForm"
+import { getAccessToken } from "@/lib/auth"
 
 export default function PlaylistGenerator() {
     const [activeWidgets, setActiveWidgets] = useState({
@@ -66,6 +68,44 @@ export default function PlaylistGenerator() {
         }
         const generatedPlaylist = await generatePlaylist(preferences)
         setPlaylist(generatedPlaylist)
+    }
+
+    const savePlaylist = async  (name,description) => {
+        if (!name) return
+
+        const token = getAccessToken()
+
+        const create_res = await fetch("https://api.spotify.com/v1/me/playlists", {
+            method:"POST",
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name,
+                description,
+                public: false
+            })
+        })
+
+        const data = await create_res.json()
+        const uris = playlist.map(t => t.uri)
+
+        const res = await fetch(`https://api.spotify.com/v1/playlists/${data.id}/tracks`, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ uris })
+        });
+
+        const storedPlaylists = JSON.parse(localStorage.getItem("playlists") || "[]");
+
+        const playlist_data = await spotifyRequest(`https://api.spotify.com/v1/playlists/${data.id}`)
+        storedPlaylists.push(playlist_data)
+        localStorage.setItem("playlists", JSON.stringify(storedPlaylists));
+
     }
 
     return (
@@ -162,11 +202,22 @@ export default function PlaylistGenerator() {
             </div>
 
             <div className="w-full mb-4">
-                <h1 className="text-2xl font-bold text-white text-center my-2 p-4 w-full rounded-2xl"> Playlist </h1>
-                {playlist.length === 0 
-                    ? <p className="text-white text-center">Playlist vacía</p>
-                    :<SongList songs={playlist} onSelect={null} onDelete={removePlaylistTrack} />}
+                <h1 className="text-2xl font-bold text-white text-center my-2 p-4 w-full rounded-2xl">Playlist</h1>
+
+                {playlist.length === 0 ? (
+                    <p className="text-white text-center">Playlist vacía</p>
+                ) : (
+                    <>
+                        <SongList 
+                            songs={playlist} 
+                            onSelect={null} 
+                            onDelete={removePlaylistTrack} 
+                        />
+                        <SubmitForm onSearch={savePlaylist}/>
+                    </>
+                )}
             </div>
+
         </div>
     )
 

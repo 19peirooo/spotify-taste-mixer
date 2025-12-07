@@ -43,8 +43,28 @@ export default function DashboardClientPage() {
             localStorage.setItem("favourite_tracks",JSON.stringify(unique))
         }
 
+        async function loadPlaylists() {
+            const stored = localStorage.getItem("playlists")
+            const existing = stored ? JSON.parse(stored) : []
+
+            const data = await spotifyRequest("https://api.spotify.com/v1/me/playlists")
+            const fetched_playlists = data.items || []
+
+            const playlists = [...existing,...fetched_playlists]
+
+            const unique = playlists.reduce((acc, playlist) => {
+                if (!acc.some(p => p.id === playlist.id)) {
+                    acc.push(playlist);
+                }
+                return acc;
+            }, []);
+            console.log(unique)
+            localStorage.setItem("playlists",JSON.stringify(unique))
+        }
+
         loadTopArtists()
         loadTopTracks()
+        loadPlaylists()
 
     },[])
 
