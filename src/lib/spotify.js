@@ -66,7 +66,7 @@ export async function generatePlaylist(preferences) {
   }
 
   //7. Añadir canciones del track widget
-  let playlist = allTracks.slice(0,30)
+  let playlist = allTracks.slice(0,50)
   if (tracks) {
     playlist = [...playlist,...tracks]
   }

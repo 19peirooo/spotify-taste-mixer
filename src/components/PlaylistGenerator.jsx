@@ -84,7 +84,7 @@ export default function PlaylistGenerator() {
             body: JSON.stringify({
                 name,
                 description,
-                public: false
+                public: true
             })
         })
 
