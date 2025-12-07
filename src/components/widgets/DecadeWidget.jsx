@@ -20,10 +20,10 @@ export default function DecadeWidget({ onSelect, selectedItems }) {
 
     
     return (
-         <div className="flex flex-col items-center w-full bg-[#191414] rounded-2xl">
+        <>
             <h2 className="text-2xl font-bold text-white text-center">Buscar Decadas</h2>
             <DecadeList decades={availableDecades} onSelect={toggleDecade} selectedDecades={selectedItems}/>
-        </div>
+        </>
     )
 
 }

@@ -1,36 +1,30 @@
 import { getAccessToken,refreshAccessToken } from "./auth";
 
 export async function generatePlaylist(preferences) {
-  const { artists, genres, decades, popularity } = preferences;
-  const token = getAccessToken();
-  let allTracks = [];
+  const { tracks ,artists, genres, decades, popularity, mood } = preferences;
+
+  let allTracks = []
 
   // 1. Obtener top tracks de artistas seleccionados
-  for (const artist of artists) {
-    const tracks = await fetch(
-      `https://api.spotify.com/v1/artists/${artist.id}/top-tracks?market=US`,
-      {
-        headers: { 'Authorization': `Bearer ${token}` }
-      }
-    );
-    const data = await tracks.json();
-    allTracks.push(...data.tracks);
+  if (artists) {
+    for (const artist of artists) {
+      const data = await spotifyRequest(`https://api.spotify.com/v1/artists/${artist.id}/top-tracks?market=ES`)
+      const top_tracks = data.tracks || []
+      allTracks = [...allTracks,...top_tracks]
+    }
   }
-
+  
   // 2. Buscar por géneros
-  for (const genre of genres) {
-    const results = await fetch(
-      `https://api.spotify.com/v1/search?type=track&q=genre:${genre}&limit=20`,
-      {
-        headers: { 'Authorization': `Bearer ${token}` }
-      }
-    );
-    const data = await results.json();
-    allTracks.push(...data.tracks.items);
+  if (genres) {  
+    for (const genre of genres) {
+      const data = await spotifyRequest(`https://api.spotify.com/v1/search?type=track&q=genre:${genre}&limit=20`)
+      const track_data = data?.tracks?.items || []
+      allTracks = [...allTracks, ...track_data]
+    }
   }
-
+  
   // 3. Filtrar por década
-  if (decades.length > 0) {
+  if (decades && decades.length > 0) {
     allTracks = allTracks.filter(track => {
       const year = new Date(track.album.release_date).getFullYear();
       return decades.some(decade => {
@@ -42,34 +36,59 @@ export async function generatePlaylist(preferences) {
 
   // 4. Filtrar por popularidad
   if (popularity) {
-    const [min, max] = popularity;
+    const min = popularity.min
+    const max = popularity.max
     allTracks = allTracks.filter(
       track => track.popularity >= min && track.popularity <= max
     );
   }
+  console.log(allTracks)
 
-  // 5. Eliminar duplicados y limitar a 30 canciones
-  const uniqueTracks = Array.from(
-    new Map(allTracks.map(track => [track.id, track])).values()
-  ).slice(0, 30);
+  //5. Eliminar Duplicados
+  allTracks= Array.from(
+    new Map(allTracks.map(t => [t.id, t])).values()
+  )
+  console.log(allTracks)
 
-  return uniqueTracks;
+  //6. Filtrar por estado de animo
+  if (mood) {
+    let filteredTracks = []
+    for (const track of allTracks) {
+      const audioFeatures = await spotifyRequest(`https://api.spotify.com/v1/audio-features/${track.id}`)
+
+      const matchesMood = Object.keys(mood).every(key => {
+        return audioFeatures[key] >= key.min && audioFeatures[key] <= key.max
+      })
+
+      if (matchesMood) filteredTracks.push(track)
+
+    }
+    allTracks = filteredTracks
+  }
+  console.log(allTracks)
+
+  //7. Añadir canciones del track widget
+  let playlist = allTracks.slice(0,30)
+  if (tracks) {
+    playlist = [...playlist,...tracks]
+  }
+  return playlist;
 }
 
 export async function spotifyRequest(url) {
-  const token = getAccessToken();
+  let token = getAccessToken();
   
   if (!token) {
     // Intentar refrescar token
-    const newToken = await refreshAccessToken();
-    if (!newToken) {
+    token = await refreshAccessToken();
+    if (!token) {
       // Redirigir a login
       window.location.href = '/';
       return;
     }
   }
 
-  const response = await fetch(url, {
+  let response = await fetch(url, {
     headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -78,8 +97,20 @@ export async function spotifyRequest(url) {
 
   if (response.status === 401) {
     // Token expirado, refrescar
-    const newToken = await refreshAccessToken();
+    token = await refreshAccessToken();
     // Reintentar petición
+
+    if (!token) {
+      window.location.href = "/";
+      return;
+    }
+
+    response = await fetch(url, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
   }
 
   if (!response.ok) {

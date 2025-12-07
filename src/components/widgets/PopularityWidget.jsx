@@ -1,4 +1,4 @@
-import PopularitySliderInput from "../PopularitySliderInput";
+import MinMaxSliderInput from "../MinMaxSliderInput";
 
 export default function PopularityWidget({ selectedItems, onSelect }) {
 
@@ -17,7 +17,7 @@ export default function PopularityWidget({ selectedItems, onSelect }) {
     return (
         <>
             <h2 className="text-2xl font-bold text-white text-center">Buscar por popularidad</h2>
-            <PopularitySliderInput value={selectedItems} onChange={onSelect}/>
+            <MinMaxSliderInput label="Popularidad" value={selectedItems} onChange={onSelect} min={0} max={100} step={1} />
             <div className="flex justify-center gap-4 mt-4">
                 <button onClick={applyMainstream} className="px-4 py-2 bg-[#212121] text-white font-semibold rounded-lg hover:bg-[#1ed760] transition-colors">Mainstream</button>
                 <button onClick={applyPopular} className="px-4 py-2 bg-[#212121] text-white font-semibold rounded-lg hover:bg-[#1ed760] transition-colors">Popular</button>

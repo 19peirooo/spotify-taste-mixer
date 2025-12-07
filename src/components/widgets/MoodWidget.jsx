@@ -4,39 +4,40 @@ export default function MoodWidget( {selectedItems, onSelect} ) {
 
     const applyHappy = () => {
         onSelect({
-            energy: 0.8,
-            valence: 0.8,
-            danceability: 0.7,
-            acousticness: 0.2
+            energy: { min: 0.8, max: 0.9 },
+            valence: { min: 0.8, max: 0.9 },
+            danceability: { min: 0.7, max: 0.8 },
+            acousticness: { min: 0.1, max: 0.3 }
         });
     }
 
     const applySad = () => {
         onSelect({
-            energy: 0.3,
-            valence: 0.3,
-            danceability: 0.4,
-            acousticness: 0.3
+            energy: { min: 0.2, max: 0.4 },
+            valence: { min: 0.2, max: 0.4 },
+            danceability: { min: 0.3, max: 0.5 },
+            acousticness: { min: 0.3, max: 0.5 }
         });
     }
 
     const applyEnergetic = () => {
         onSelect({
-            energy: 0.9,
-            valence: 0.7,
-            danceability: 0.8,
-            acousticness: 0.1
+            energy: { min: 0.9, max: 1.0 },
+            valence: { min: 0.6, max: 0.8 },
+            danceability: { min: 0.8, max: 1.0 },
+            acousticness: { min: 0.0, max: 0.2 }
         });
     }
 
     const applyCalm = () => {
         onSelect({
-            energy: 0.25,
-            valence: 0.5,
-            danceability: 0.4,
-            acousticness: 0.7
+            energy: { min: 0.2, max: 0.4 },
+            valence: { min: 0.4, max: 0.6 },
+            danceability: { min: 0.3, max: 0.5 },
+            acousticness: { min: 0.6, max: 0.8 }
         });
     }
+
 
     return (
         
