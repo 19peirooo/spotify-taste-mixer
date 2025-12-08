@@ -1,5 +1,4 @@
-import PlaylistGenerator from "@/components/PlaylistGenerator"
-import ArtistWidget from "@/components/widgets/ArtistWidget"
+import PlaylistGenerator from "./PlaylistGenerator"
 
 export const metadata = {
     title: "Buscar",
