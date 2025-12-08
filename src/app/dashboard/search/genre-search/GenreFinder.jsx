@@ -1,12 +1,15 @@
 "use client"
 import GenreWidget from "@/components/widgets/GenreWidget"
 import { useState } from "react"
-import SongList from "@/components/SongList"
 import { spotifyRequest } from "@/lib/spotify"
+import PlaylistMenu from "@/components/PlaylistMenu"
+import SongList from "@/components/SongList"
 
 export default function GenreFinder() {
     const [tracks, setTracks] = useState([])
     const [genres, setGenres] = useState([])
+    const [isOpen, setIsOpen] = useState(false)
+    const [selectedTrack, setSelectedTrack] = useState(null)
 
     const removeTrack = (trackId) => {
         setTracks(tracks.filter(t => t.id !== trackId))
@@ -26,13 +29,24 @@ export default function GenreFinder() {
         setTracks(allTracks)
     }
 
+    const saveTrack = (track) => {
+        setSelectedTrack(track)
+        setIsOpen(true)
+    }
+
+    const handleClose = () => {
+        setSelectedTrack(null)
+        setIsOpen(false)
+    }
+
     return (
         <div className="flex flex-col items-center w-full bg-[#191414] my-2 p-4 rounded-2xl">
             <GenreWidget onSelect={setGenres} selectedItems={genres}/>
             <button className="mt-4 px-4 py-2 bg-[#1DB954] text-black font-semibold rounded-xl 
                            hover:bg-[#1ed760] transition cursor-pointer shadow-md" onClick={findSongs}>Buscar Canciones</button>
             <h2 className="text-2xl font-bold text-white mt-2">Canciones Encontradas: </h2>
-            <SongList songs={tracks} onSelect={null} onDelete={removeTrack} />    
+            <SongList songs={tracks} onSelect={saveTrack} onDelete={removeTrack} />
+            {isOpen && selectedTrack && <PlaylistMenu track={selectedTrack} onClose={handleClose} isOpen={isOpen}/>}       
         </div>
     )
 }

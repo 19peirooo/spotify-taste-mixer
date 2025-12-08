@@ -3,11 +3,17 @@ import Image from "next/image"
 import { FaHeart } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
 import { isFavouriteTrack } from "@/lib/favourites";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Song( {data, onFavourite, onDelete } ) {
 
     const [favourite,setFavourite] = useState(isFavouriteTrack(data))
+
+    useEffect(() => {
+        if (data) {
+            setFavourite(isFavouriteTrack(data));
+        }
+    }, [data]);
 
     const handleDelete = (e) => {
         e.stopPropagation()

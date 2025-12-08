@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import TopTracksList from "@/components/TopTracksList";
 import { isFavouriteArtist, toggleFavouriteArtist } from "@/lib/favourites";
 import { FaHeart } from "react-icons/fa";
+import PlaylistMenu from "@/components/PlaylistMenu";
 
 
 export default function ArtistDataPage({ id }) {
@@ -13,6 +14,8 @@ export default function ArtistDataPage({ id }) {
     const [artist, setArtist] = useState(null);
     const [loading, setLoading] = useState(true);
     const [favourite,setFavourite] = useState(false)
+    const [isOpen, setIsOpen] = useState(false)
+    const [selectedTrack, setSelectedTrack] = useState(null)
     const router = useRouter()
 
     useEffect(() => {
@@ -34,6 +37,16 @@ export default function ArtistDataPage({ id }) {
         e.stopPropagation()
         toggleFavouriteArtist(artist)
         setFavourite(isFavouriteArtist(artist))
+    }
+
+    const saveTrack = (track) => {
+        setSelectedTrack(track)
+        setIsOpen(true)
+    }
+
+    const handleClose = () => {
+        setSelectedTrack(null)
+        setIsOpen(false)
     }
 
     if (loading) return <p>Cargando artista…</p>;
@@ -69,7 +82,8 @@ export default function ArtistDataPage({ id }) {
             </div>
             <div>
                 <h1 className="text-3xl font-bold mb-2">Mejores Canciones: </h1>
-                <TopTracksList songs={artist.top_tracks} onSelect={null} />
+                <TopTracksList songs={artist.top_tracks} onSelect={saveTrack} />
+                {isOpen && selectedTrack && <PlaylistMenu track={selectedTrack} onClose={handleClose} isOpen={isOpen}/>}
             </div>
         </div>
     )
