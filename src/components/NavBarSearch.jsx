@@ -5,7 +5,7 @@ import { HiMenu, HiX } from "react-icons/hi";
 
 export default function NavBarSearch() {
 
-    const [open, isOpen] = useState(false)
+    const [open, setOpen] = useState(false)
 
     const linkstyle = "flex-1 bg-[#191414] h-full flex justify-center items-center text-white hover:bg-[#1DB954]"
 
