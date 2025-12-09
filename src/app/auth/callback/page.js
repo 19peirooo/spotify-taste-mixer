@@ -4,53 +4,55 @@ import { useEffect, useState, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { saveTokens } from '@/lib/auth';
 
-export const dynamic = "force-dynamic";
+// Forzar que esta página sea dinámica
+export const dynamic = 'force-dynamic';
 
 export default function CallbackPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true); // nuevo estado de carga
   const hasProcessed = useRef(false);
 
   useEffect(() => {
-    // Prevenir ejecución duplicada
     if (hasProcessed.current) return;
 
-    const code = searchParams.get('code');
-    const state = searchParams.get('state');
-    const errorParam = searchParams.get('error');
+    const processOAuth = async () => {
+      const code = searchParams.get('code');
+      const state = searchParams.get('state');
+      const errorParam = searchParams.get('error');
 
-    if (errorParam) {
-      setError('Autenticación cancelada');
-      return;
-    }
+      if (errorParam) {
+        setError('Autenticación cancelada');
+        setLoading(false);
+        return;
+      }
 
-    if (!code) {
-      setError('No se recibió código de autorización');
-      return;
-    }
+      if (!code) {
+        setError('No se recibió código de autorización');
+        setLoading(false);
+        return;
+      }
 
-    // Validar state para prevenir CSRF
-    const savedState = localStorage.getItem('spotify_auth_state');
-    if (!state || state !== savedState) {
-      setError('Error de validación de seguridad (CSRF). Intenta iniciar sesión de nuevo.');
+      // Validar state para prevenir CSRF
+      const savedState = localStorage.getItem('spotify_auth_state');
+      if (!state || state !== savedState) {
+        setError(
+          'Error de validación de seguridad (CSRF). Intenta iniciar sesión de nuevo.'
+        );
+        localStorage.removeItem('spotify_auth_state');
+        setLoading(false);
+        return;
+      }
+
       localStorage.removeItem('spotify_auth_state');
-      return;
-    }
+      hasProcessed.current = true;
 
-    // Limpiar state después de validar
-    localStorage.removeItem('spotify_auth_state');
-
-    // Marcar como procesado
-    hasProcessed.current = true;
-
-    // Intercambiar código por token
-    const exchangeCodeForToken = async (code) => {
       try {
         const response = await fetch('/api/spotify-token', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ code })
+          body: JSON.stringify({ code }),
         });
 
         const data = await response.json();
@@ -64,16 +66,18 @@ export default function CallbackPage() {
 
         // Redirigir al dashboard
         router.push('/dashboard');
-
-      } catch (error) {
-        console.error('Error:', error);
-        setError(error.message);
+      } catch (err) {
+        console.error('Error:', err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
       }
     };
 
-    exchangeCodeForToken(code);
+    processOAuth();
   }, [searchParams, router]);
 
+  // Render de error
   if (error) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-900">
@@ -91,12 +95,18 @@ export default function CallbackPage() {
     );
   }
 
-  return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-900">
-      <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto mb-4"></div>
-        <p className="text-white text-xl">Autenticando...</p>
+  // Render de loading
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-900">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto mb-4"></div>
+          <p className="text-white text-xl">Autenticando...</p>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
+
+  // Por seguridad, fallback
+  return null;
 }
