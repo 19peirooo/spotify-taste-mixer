@@ -1,40 +1,51 @@
-import { useDrag } from "react-dnd";
-import { useDrop } from "react-dnd";
+import { useDrag, useDrop } from "react-dnd";
+import { useRef } from "react";
 
-// Elemento arrastrable (solo arrastra)
-export function dragTrack(track, idx) {
+// DRAG + DROP HOOKS
+export function useDragDropTrack(track, idx, moveTrack) {
+  const ref = useRef(null);
 
-    const [{ isDragging }, dragRef] = useDrag(() => ({
-        type: "track",
-        item: { id: track.id, index: idx },   // <- CORREGIDO
-        collect: (monitor) => ({
-            isDragging: monitor.isDragging(),
-        }),
-    }), [idx, track.id]);
+  const [{ isOver }, drop] = useDrop({
+    accept: "track",
+    hover(item, monitor) {
+      if (!ref.current) return;
 
-    return { isDragging, dragRef };
-}
+      const dragIndex = item.index;
+      const hoverIndex = idx;
+      if (dragIndex === hoverIndex) return;
 
-// Zona receptora (permite soltar)
-export function dropTrack(idx, moveTrack) {
+      const hoverRect = ref.current.getBoundingClientRect();
+      const clientOffset = monitor.getClientOffset();
+      if (!clientOffset) return;
 
-    const [{ isOver }, dropRef] = useDrop(() => ({
-        accept: "track",
-        hover: (item) => {
+      const hoverMiddleY = (hoverRect.bottom - hoverRect.top) / 2;
+      const hoverClientY = clientOffset.y - hoverRect.top;
 
-            // Evita mover si es el mismo índice
-            if (item.index === idx) return;
+      // Evita múltiples swaps: solo mover si el mouse cruzó la mitad
+      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) return;
+      if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) return;
 
-            // Llama a la función que ordena la lista
-            moveTrack(item.index, idx);  
+      // Mueve la canción
+      moveTrack(dragIndex, hoverIndex);
 
-            // Actualiza el índice del elemento que arrastras
-            item.index = idx;
-        },
-        collect: (monitor) => ({
-            isOver: monitor.isOver(),
-        }),
-    }), [idx, moveTrack]);
+      // Actualiza índice del item arrastrado para que no se vuelva a disparar
+      item.index = hoverIndex;
+    },
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+    }),
+  });
 
-    return { isOver, dropRef };
+  const [{ isDragging }, drag] = useDrag({
+    type: "track",
+    item: { id: track.id, index: idx },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+
+  // Conecta drag y drop al mismo ref
+  drag(drop(ref));
+
+  return { ref, isDragging, isOver };
 }
