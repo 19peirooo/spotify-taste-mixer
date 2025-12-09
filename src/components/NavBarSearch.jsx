@@ -29,13 +29,13 @@ export default function NavBarSearch() {
 
             {open && 
             <ul className="absolute top-16 left-0 w-full bg-[#191414] flex flex-col space-y-1 p-2 md:hidden z-50">
-                <li ><Link href="/dashboard/search" className={mobilelinkstyle}>Generador de Playlists</Link></li>
-                <li ><Link href="/dashboard/search/artist-search" className={mobilelinkstyle}>Busqueda De Artistas</Link></li>
-                <li ><Link href="/dashboard/search/decade-search" className={mobilelinkstyle}>Busqueda Por Decada</Link></li>
-                <li ><Link href="/dashboard/search/genre-search" className={mobilelinkstyle}>Busqueda Por Genero</Link></li>
-                <li ><Link href="/dashboard/search/mood-search" className={mobilelinkstyle}>Busqueda Por Ánimo</Link></li>
-                <li ><Link href="/dashboard/search/popularity-search" className={mobilelinkstyle}>Busqueda Por Popularidad</Link></li>
-                <li><Link href="/dashboard/search/track-search" className={mobilelinkstyle}>Busqueda Por Cancion</Link></li>
+                <li onClick={setOpen(false)}><Link href="/dashboard/search" className={mobilelinkstyle}>Generador de Playlists</Link></li>
+                <li onClick={setOpen(false)}><Link href="/dashboard/search/artist-search" className={mobilelinkstyle}>Busqueda De Artistas</Link></li>
+                <li onClick={setOpen(false)}><Link href="/dashboard/search/decade-search" className={mobilelinkstyle}>Busqueda Por Decada</Link></li>
+                <li onClick={setOpen(false)}><Link href="/dashboard/search/genre-search" className={mobilelinkstyle}>Busqueda Por Genero</Link></li>
+                <li onClick={setOpen(false)}><Link href="/dashboard/search/mood-search" className={mobilelinkstyle}>Busqueda Por Ánimo</Link></li>
+                <li onClick={setOpen(false)}><Link href="/dashboard/search/popularity-search" className={mobilelinkstyle}>Busqueda Por Popularidad</Link></li>
+                <li onClick={setOpen(false)}><Link href="/dashboard/search/track-search" className={mobilelinkstyle}>Busqueda Por Cancion</Link></li>
             </ul>}
         </nav>
     )
