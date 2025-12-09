@@ -10,23 +10,29 @@ export default function GenreFinder() {
     const [genres, setGenres] = useState([])
     const [isOpen, setIsOpen] = useState(false)
     const [selectedTrack, setSelectedTrack] = useState(null)
+    const [loading, setLoading] = useState(null)
 
     const removeTrack = (trackId) => {
         setTracks(tracks.filter(t => t.id !== trackId))
     }
 
     const findSongs = async () => {
-        setTracks([])
-        if (genres.length < 3 || genres.length > 5) return;
+        setLoading(true)
+        try {
+            setTracks([])
+            if (genres.length < 3 || genres.length > 5) return;
 
-        let allTracks = []
+            let allTracks = []
 
-        for (const genre of genres) {
-            const data = await spotifyRequest(`https://api.spotify.com/v1/search?type=track&q=genre:${genre}&limit=5`)
-            const track_data = data?.tracks?.items || []
-            allTracks = [...allTracks, ...track_data]
+            for (const genre of genres) {
+                const data = await spotifyRequest(`https://api.spotify.com/v1/search?type=track&q=genre:${genre}&limit=5`)
+                const track_data = data?.tracks?.items || []
+                allTracks = [...allTracks, ...track_data]
+            }
+            setTracks(allTracks)
+        } finally {
+            setLoading(false)
         }
-        setTracks(allTracks)
     }
 
     const saveTrack = (track) => {
@@ -37,6 +43,15 @@ export default function GenreFinder() {
     const handleClose = () => {
         setSelectedTrack(null)
         setIsOpen(false)
+    }
+
+    if (loading) {
+        return (
+            <div className="flex flex-col justify-center items-center h-screen">
+                <div className="w-16 h-16 border-4 border-gray-300 border-t-green-500 rounded-full animate-spin"></div>
+                <p className="text-xl font-bold mt-2">Cargando Canciones</p>
+            </div>
+        );
     }
 
     return (

@@ -10,6 +10,7 @@ export default function DecadeFinder() {
     const [decades, setDecades] = useState([])
     const [isOpen, setIsOpen] = useState(false)
     const [selectedTrack, setSelectedTrack] = useState(null)
+    const [loading, setLoading] = useState(false)
 
     const removeTrack = (trackId) => {
         setTracks(tracks.filter(t => t.id !== trackId))
@@ -17,21 +18,25 @@ export default function DecadeFinder() {
 
     const findSongs = async () => {
         setTracks([])
+        setLoading(true)
+        try {
+            let allTracks = []
 
-        let allTracks = []
+            if (decades.length === 0) return
 
-        if (decades.length === 0) return
+            for (const decade of decades) {
+                const start = parseInt(decade)
+                const end = start + 9
 
-        for (const decade of decades) {
-            const start = parseInt(decade)
-            const end = start + 9
+                const data = await spotifyRequest(`https://api.spotify.com/v1/search?q=year:${start}-${end}&type=track&limit=5`)
+                const track_data = data.tracks.items || []
+                allTracks = [...allTracks,...track_data]
+            }
 
-            const data = await spotifyRequest(`https://api.spotify.com/v1/search?q=year:${start}-${end}&type=track&limit=5`)
-            const track_data = data.tracks.items || []
-            allTracks = [...allTracks,...track_data]
+            setTracks(allTracks)
+        } finally {
+            setLoading(false)
         }
-
-        setTracks(allTracks)
         
     }
 
@@ -45,6 +50,14 @@ export default function DecadeFinder() {
         setIsOpen(false)
     }
     
+    if (loading) {
+        return (
+            <div className="flex flex-col justify-center items-center h-screen">
+                <div className="w-16 h-16 border-4 border-gray-300 border-t-green-500 rounded-full animate-spin"></div>
+                <p className="text-xl font-bold mt-2">Cargando Canciones</p>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col items-center w-full bg-[#191414] my-2 p-4 rounded-2xl">

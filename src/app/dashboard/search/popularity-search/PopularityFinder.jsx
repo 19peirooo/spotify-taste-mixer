@@ -16,6 +16,7 @@ export default function PopularityFinder() {
     const [filteredPlaylist, setFilteredPlaylist] = useState(null)
     const [isOpen, setIsOpen] = useState(false)
     const [selectedTrack, setSelectedTrack] = useState(null)
+    const [loading, setLoading] = useState(false)
     const pathname = usePathname()
 
     const removeTrack = (trackId) => {
@@ -23,22 +24,27 @@ export default function PopularityFinder() {
     }
 
     const findSongs = async () => {
-        setTracks([])
-        if (!filteredPlaylist) return
+        setLoading(true)
+        try {
+            setTracks([])
+            if (!filteredPlaylist) return
 
-        let allTracks = []
-        let offset = 0
+            let allTracks = []
+            let offset = 0
 
-        while (offset < filteredPlaylist.tracks.total) {
-            const data = await spotifyRequest(`https://api.spotify.com/v1/playlists/${filteredPlaylist.id}/tracks?limit=100&offset=${offset}`)
-            const track_data = data?.items || []
-            const track_list = track_data.map(t => t.track).filter(t => t !== null)
-            allTracks = [...allTracks,...track_list]
-            offset += 100
+            while (offset < filteredPlaylist.tracks.total) {
+                const data = await spotifyRequest(`https://api.spotify.com/v1/playlists/${filteredPlaylist.id}/tracks?limit=100&offset=${offset}`)
+                const track_data = data?.items || []
+                const track_list = track_data.map(t => t.track).filter(t => t !== null)
+                allTracks = [...allTracks,...track_list]
+                offset += 100
+            }
+
+            const filtered_list = allTracks.filter(t => t.popularity >= popularity.min && t.popularity <= popularity.max)
+            setTracks(filtered_list)
+        } finally {
+            setLoading(false)
         }
-
-        const filtered_list = allTracks.filter(t => t.popularity >= popularity.min && t.popularity <= popularity.max)
-        setTracks(filtered_list)
         
     }
 
@@ -57,6 +63,15 @@ export default function PopularityFinder() {
     const handleClose = () => {
         setSelectedTrack(null)
         setIsOpen(false)
+    }
+
+    if (loading) {
+        return (
+            <div className="flex flex-col justify-center items-center h-screen">
+                <div className="w-16 h-16 border-4 border-gray-300 border-t-green-500 rounded-full animate-spin"></div>
+                <p className="text-xl font-bold mt-2">Cargando Canciones</p>
+            </div>
+        );
     }
 
     return (

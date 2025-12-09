@@ -49,7 +49,15 @@ export default function ArtistDataPage({ id }) {
         setIsOpen(false)
     }
 
-    if (loading) return <p>Cargando artista…</p>;
+    if (loading) {
+        return (
+            <div className="flex flex-col justify-center items-center h-screen">
+                <div className="w-16 h-16 border-4 border-gray-300 border-t-green-500 rounded-full animate-spin"></div>
+                <p className="text-xl font-bold mt-2">Cargando Artista</p>
+            </div>
+        );
+    }
+
 
     return (
         <div className="relative flex flex-col gap-8 p-6 bg-[#191414]">

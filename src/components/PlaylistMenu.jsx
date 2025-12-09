@@ -9,6 +9,7 @@ export default function PlaylistMenu({ track, onClose, isOpen }) {
 
     const menuRef = useRef(null)
     const [playlists,setPlaylists] = useState([])
+    const [loading, setLoading] = useState(false)
 
     const loadPlaylists = async () => {
         const stored = localStorage.getItem('playlists')
@@ -24,36 +25,48 @@ export default function PlaylistMenu({ track, onClose, isOpen }) {
     },[isOpen])
 
     const addTrackToPlaylist = async (playlist) => {
+        setLoading(true)
+        try {
+           const token = getAccessToken()
+            let allTracks = []
+            let offset = 0
 
-        const token = getAccessToken()
-        let allTracks = []
-        let offset = 0
+            const playlist_data = await spotifyRequest(`https://api.spotify.com/v1/playlists/${playlist.id}`);
 
-        const playlist_data = await spotifyRequest(`https://api.spotify.com/v1/playlists/${playlist.id}`);
+            while (offset < playlist_data.tracks.total) {
+                const data = await spotifyRequest(`https://api.spotify.com/v1/playlists/${playlist.id}/tracks?limit=100&offset=${offset}`)
+                const track_data = data?.items || []
+                const track_list = track_data.map(t => t.track).filter(t => t !== null)
+                allTracks = [...allTracks,...track_list]
+                offset += 100
+            }
 
-        while (offset < playlist_data.tracks.total) {
-            const data = await spotifyRequest(`https://api.spotify.com/v1/playlists/${playlist.id}/tracks?limit=100&offset=${offset}`)
-            const track_data = data?.items || []
-            const track_list = track_data.map(t => t.track).filter(t => t !== null)
-            allTracks = [...allTracks,...track_list]
-            offset += 100
+            const exists = allTracks.some(t => t.id === track.id)
+            if (!exists) {
+                const response = await fetch( `https://api.spotify.com/v1/playlists/${playlist.id}/tracks`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ uris: [track.uri] })
+                })
+            } 
+        } finally {
+            setLoading(false)
+            onClose()
         }
 
-        const exists = allTracks.some(t => t.id === track.id)
-        if (!exists) {
-            const response = await fetch( `https://api.spotify.com/v1/playlists/${playlist.id}/tracks`,
-            {
-                method: "POST",
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ uris: [track.uri] })
-            })
-        }
-        onClose()
+    }
 
-        
+    if (loading) {
+        return (
+            <div className="flex flex-col justify-center items-center h-screen">
+                <div className="w-16 h-16 border-4 border-gray-300 border-t-green-500 rounded-full animate-spin"></div>
+                <p className="text-xl font-bold mt-2">Guardando Cancion</p>
+            </div>
+        );
     }
 
     return (

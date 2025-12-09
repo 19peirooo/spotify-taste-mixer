@@ -36,6 +36,7 @@ export default function PlaylistGenerator() {
         "danceability": {min:0,max:1},
         "acousticness": {min:0,max:1}
     })
+    const [loading,setLoading] = useState(false)
 
     const addArtist = (artist) => {
         setArtists([...artists,artist])
@@ -68,17 +69,22 @@ export default function PlaylistGenerator() {
     }
 
     const createPlaylist = async () => {
-        setPlaylist([])
-        const preferences = {
-            tracks: activeWidgets.track ? tracks : null,
-            artists: activeWidgets.artist ? artists : null,
-            genres: activeWidgets.genre ? genres : null,
-            decades: activeWidgets.decade ? decades : null,
-            popularity: activeWidgets.popularity ? popularity : null,
-            mood: activeWidgets.mood ? mood : null
+        setLoading(true)
+        try {
+            setPlaylist([])
+            const preferences = {
+                tracks: activeWidgets.track ? tracks : null,
+                artists: activeWidgets.artist ? artists : null,
+                genres: activeWidgets.genre ? genres : null,
+                decades: activeWidgets.decade ? decades : null,
+                popularity: activeWidgets.popularity ? popularity : null,
+                mood: activeWidgets.mood ? mood : null
+            }
+            const generatedPlaylist = await generatePlaylist(preferences)
+            setPlaylist(generatedPlaylist)
+        } finally {
+            setLoading(false)
         }
-        const generatedPlaylist = await generatePlaylist(preferences)
-        setPlaylist(generatedPlaylist)
     }
 
     const savePlaylist = async  (name,description) => {
@@ -117,6 +123,15 @@ export default function PlaylistGenerator() {
         storedPlaylists.push(playlist_data)
         localStorage.setItem("playlists", JSON.stringify(storedPlaylists));
 
+    }
+
+    if (loading) {
+        return (
+            <div className="flex flex-col justify-center items-center h-screen">
+                <div className="w-16 h-16 border-4 border-gray-300 border-t-green-500 rounded-full animate-spin"></div>
+                <p className="text-xl font-bold mt-2">Creando Playlist</p>
+            </div>
+        );
     }
 
     return (

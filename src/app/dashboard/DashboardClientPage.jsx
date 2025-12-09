@@ -1,9 +1,12 @@
 "use client"
 
 import { spotifyRequest } from "@/lib/spotify"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 export default function DashboardClientPage() {
+
+    const [loading,setLoading] = useState(false)
+    const [loadingType, setLoadingType] = useState("")
 
     useEffect(() => {
 
@@ -62,11 +65,28 @@ export default function DashboardClientPage() {
             localStorage.setItem("playlists",JSON.stringify(unique))
         }
 
-        loadTopArtists()
-        loadTopTracks()
-        loadPlaylists()
+        setLoading(true)
+        try {
+            setLoadingType("Artistas Favoritos")
+            loadTopArtists()
+            setLoadingType("Canciones Favoritas")
+            loadTopTracks()
+            setLoadingType("Playlists")
+            loadPlaylists()
+        } finally {
+            setLoading(false)
+        }
 
     },[])
+
+    if (loading) {
+        return (
+            <div className="flex flex-col justify-center items-center h-screen">
+                <div className="w-16 h-16 border-4 border-gray-300 border-t-green-500 rounded-full animate-spin"></div>
+                <p className="text-xl font-bold mt-2">Cargando {loadingType}</p>
+            </div>
+        );
+    }
 
     return (
         <div>
