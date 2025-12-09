@@ -63,6 +63,10 @@ export default function PlaylistDataPage({ id }) {
         load();
     }, [id]);
 
+    const handleTrackClick = (track) => {
+        router.push(`/dashboard/tracks/${track.id}`)
+    }
+
     if (loading) {
         return (
             <div className="flex flex-col justify-center items-center h-screen">
@@ -115,7 +119,7 @@ export default function PlaylistDataPage({ id }) {
                         Siguiente
                     </button>
                 </div>
-                <PlaylistTrackList songs={displayedTracks} onSelect={null} />
+                <PlaylistTrackList songs={displayedTracks} onSelect={handleTrackClick} />
             </div>
         </div>
     )
