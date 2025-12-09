@@ -12,6 +12,7 @@ import SongList from "@/components/SongList"
 import { generatePlaylist, spotifyRequest } from "@/lib/spotify"
 import SubmitForm from "@/components/SubmitForm"
 import { getAccessToken } from "@/lib/auth"
+import DraggableSongList from "@/components/DraggableSongList"
 
 export default function PlaylistGenerator() {
     const [activeWidgets, setActiveWidgets] = useState({
@@ -208,11 +209,7 @@ export default function PlaylistGenerator() {
                     <p className="text-white text-center">Playlist vacía</p>
                 ) : (
                     <>
-                        <SongList 
-                            songs={playlist} 
-                            onSelect={null} 
-                            onDelete={removePlaylistTrack} 
-                        />
+                        <DraggableSongList songs={playlist} setSongs={setPlaylist} onDelete={removePlaylistTrack} onSelect={null}/>
                         <SubmitForm onSearch={savePlaylist}/>
                     </>
                 )}
