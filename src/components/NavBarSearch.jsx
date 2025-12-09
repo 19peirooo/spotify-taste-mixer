@@ -25,7 +25,7 @@ export default function NavBarSearch() {
                 {open ? <HiX size={28} /> : <HiMenu size={28} />}
             </button>
 
-            <ul className="absolute top-16 left-0 w-full bg-[#191414] flex flex-col space-y-1 p-2 md:hidden z-50">
+            {open && <ul className="absolute top-16 left-0 w-full bg-[#191414] flex flex-col space-y-1 p-2 md:hidden z-50">
                 <li className="h-full flex-1"><Link href="/dashboard/search" className={linkstyle}>Generador de Playlists</Link></li>
                 <li className="h-full flex-1"><Link href="/dashboard/search/artist-search" className={linkstyle}>Busqueda De Artistas</Link></li>
                 <li className="h-full flex-1"><Link href="/dashboard/search/decade-search" className={linkstyle}>Busqueda Por Decada</Link></li>
@@ -33,7 +33,7 @@ export default function NavBarSearch() {
                 <li className="h-full flex-1"><Link href="/dashboard/search/mood-search" className={linkstyle}>Busqueda Por Ánimo</Link></li>
                 <li className="h-full flex-1"><Link href="/dashboard/search/popularity-search" className={linkstyle}>Busqueda Por Popularidad</Link></li>
                 <li className="h-full flex-1"><Link href="/dashboard/search/track-search" className={linkstyle}>Busqueda Por Cancion</Link></li>
-            </ul>
+            </ul>}
         </nav>
     )
 }
