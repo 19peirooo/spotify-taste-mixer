@@ -1,7 +1,13 @@
+import MoodFinder from "./MoodFinder"
+
+export const metadata = {
+    title: "Buscar por Animo",
+    description: "Busqueda de canciones por animo"
+}
 
 export default function MoodSearchPage() {
 
     return (
-        <h1>Aqui se podra buscar estado de animo</h1>
+        <MoodFinder/>
     )
 }

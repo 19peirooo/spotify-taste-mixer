@@ -51,18 +51,14 @@ export async function generatePlaylist(preferences) {
 
   //6. Filtrar por estado de animo
   if (mood) {
-    let filteredTracks = []
-    for (const track of allTracks) {
-      const audioFeatures = await spotifyRequest(`https://api.spotify.com/v1/audio-features/${track.id}`)
-
-      const matchesMood = Object.keys(mood).every(key => {
-        return audioFeatures[key] >= key.min && audioFeatures[key] <= key.max
+    allTracks.filter(t => {
+      return Object.keys(mood).every(key =>{
+        const randNum = Math.random()
+        const min = mood[key]?.min || 0
+        const max = mood[key]?.max || 1
+        return randNum >= min && randNum <= max
       })
-
-      if (matchesMood) filteredTracks.push(track)
-
-    }
-    allTracks = filteredTracks
+    })
   }
 
   //7. Añadir canciones del track widget

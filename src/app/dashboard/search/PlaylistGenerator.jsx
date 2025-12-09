@@ -53,6 +53,16 @@ export default function PlaylistGenerator() {
         setTracks(tracks.filter(t => t.id != trackId))
     }
 
+    const addTrackToPlaylist = (track) => {
+
+        const exists = playlist.some(t => (t.id === track.id))
+
+        if (!exists) {
+            setPlaylist([...playlist,track])
+        }
+
+    }
+
     const removePlaylistTrack = (trackId) => {
         setPlaylist(playlist.filter(t => t.id != trackId))
     }
@@ -210,6 +220,10 @@ export default function PlaylistGenerator() {
                 ) : (
                     <>
                         <DraggableSongList songs={playlist} setSongs={setPlaylist} onDelete={removePlaylistTrack} onSelect={null}/>
+                        <div className="flex flex-col items-center w-full bg-green-900 rounded-2xl my-2 p-4 border border-[#1ed760]">
+                            <h1 className="text-2xl font-bold text-white text-center">Añadir mas canciones</h1>
+                            <TrackWidget selectedItems={playlist} onSelect={addTrackToPlaylist}/>
+                        </div>
                         <SubmitForm onSearch={savePlaylist}/>
                     </>
                 )}
