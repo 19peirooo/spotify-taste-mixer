@@ -16,13 +16,6 @@ export default function ArtistWidget({ onSelect, selectedItems }) {
         } else {
             const artist_data = await spotifyRequest(`https://api.spotify.com/v1/search?type=artist&q=${query}&limit=5`)
             let artist_list = artist_data?.artists?.items || []
-            if (artist_list) {
-                artist_list = artist_list.map(a => ({
-                    id: a.id,
-                    name: a.name,
-                    image: a?.images[0] || null,
-                }))
-            }
             setArtists(artist_list)
         }
     }
@@ -41,7 +34,7 @@ export default function ArtistWidget({ onSelect, selectedItems }) {
         <>
             <h2 className="text-2xl font-bold text-white text-center">Busca a tu artista favorito</h2>
             <DebouncedSearchBar onSearch={handleSearch}></DebouncedSearchBar>
-            <ArtistSearchList artists={artists} onSelect={onSelect}/>
+            <ArtistSearchList artists={artists} onSelect={handleSelect}/>
         </>
 
     )

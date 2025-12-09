@@ -1,12 +1,19 @@
 "use client"
 
+import ArtistGrid from "@/components/ArtistGrid"
+import TrackGrid from "@/components/TrackGrid"
 import { spotifyRequest } from "@/lib/spotify"
+import { usePathname, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
 export default function DashboardClientPage() {
 
     const [loading,setLoading] = useState(false)
     const [loadingType, setLoadingType] = useState("")
+    const [tracks, setTracks] = useState([])
+    const [artists,setArtists] = useState([])
+    const router = useRouter()
+    const pathname = usePathname()
 
     useEffect(() => {
 
@@ -26,6 +33,7 @@ export default function DashboardClientPage() {
                 return acc;
             }, []);
             localStorage.setItem("favourite_artists",JSON.stringify(unique))
+            setArtists(unique.slice(-10))
         }
 
         async function loadTopTracks() {
@@ -44,6 +52,7 @@ export default function DashboardClientPage() {
                 return acc;
             }, []);
             localStorage.setItem("favourite_tracks",JSON.stringify(unique))
+            setTracks(unique.slice(-10))
         }
 
         async function loadPlaylists() {
@@ -77,7 +86,15 @@ export default function DashboardClientPage() {
             setLoading(false)
         }
 
-    },[])
+    },[pathname])
+
+    const handleArtist = (id) => {
+        router.push(`/dashboard/artists/${id}`)
+    }
+
+    const handleTracks = (id) => {
+        router.push(`/dashboard/tracks/${id}`)
+    }
 
     if (loading) {
         return (
@@ -89,8 +106,16 @@ export default function DashboardClientPage() {
     }
 
     return (
-        <div>
+        <div className="p-4 space-y-8">
+            <div>
+                <h2 className="text-2xl font-bold mb-4">Artistas Favoritos</h2>
+                <ArtistGrid artists={artists} onSelect={handleArtist}/>
+            </div>
 
+            <div>
+                <h2 className="text-2xl font-bold mb-4">Canciones Favoritas</h2>
+                <TrackGrid tracks={tracks} onSelect={handleTracks}/>
+            </div>
         </div>
     )
 

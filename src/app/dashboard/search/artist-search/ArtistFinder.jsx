@@ -16,7 +16,7 @@ export default function ArtistFinder() {
         setArtists(artists.filter(a => a.id !== artistId))
     }
 
-     const handleArtist = (id) => {
+    const handleArtist = (id) => {
         router.push(`/dashboard/artists/${id}`)
     }
 
