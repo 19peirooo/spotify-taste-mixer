@@ -14,8 +14,8 @@ export default function TrackFinder() {
         setTracks([...tracks,track])
     }
 
-    const removeTrack = (trackId) => {
-        setTracks(tracks.filter(t => t.id !== trackId))
+    const removeTrack = (track) => {
+        setTracks(tracks.filter(t => t.id !== track.id))
     }
 
     const saveTrack = (track) => {

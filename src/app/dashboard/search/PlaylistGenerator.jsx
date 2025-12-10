@@ -50,8 +50,8 @@ export default function PlaylistGenerator() {
         setTracks([...tracks,track])
     }
 
-    const removeTrack = (trackId) => {
-        setTracks(tracks.filter(t => t.id != trackId))
+    const removeTrack = (track) => {
+        setTracks(tracks.filter(t => t.id != track.id))
     }
 
     const addTrackToPlaylist = (track) => {
@@ -64,8 +64,8 @@ export default function PlaylistGenerator() {
 
     }
 
-    const removePlaylistTrack = (trackId) => {
-        setPlaylist(playlist.filter(t => t.id != trackId))
+    const removePlaylistTrack = (track) => {
+        setPlaylist(playlist.filter(t => t.id != track.id))
     }
 
     const createPlaylist = async () => {

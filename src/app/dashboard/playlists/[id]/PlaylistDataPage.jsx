@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import PlaylistTrackList from "@/components/PlaylistTrackList";
+import { getAccessToken } from "@/lib/auth";
 
 
 export default function PlaylistDataPage({ id }) {
@@ -67,6 +68,28 @@ export default function PlaylistDataPage({ id }) {
         router.push(`/dashboard/tracks/${track.id}`)
     }
 
+    const deleteTrack = async (track) => {
+        const token = getAccessToken()
+
+        const response = await fetch( `https://api.spotify.com/v1/playlists/${playlist.id}/tracks`,
+            {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    tracks: [{ uri: track.uri }]
+                })
+            }
+        )
+
+        if (response.ok) {
+            setTracks(tracks.filter(t => t.id !== track.id))
+            setDisplayedTracks(displayedTracks.filter(t => t.id !== track.id))
+        }
+    }
+
     if (loading) {
         return (
             <div className="flex flex-col justify-center items-center h-screen">
@@ -119,7 +142,7 @@ export default function PlaylistDataPage({ id }) {
                         Siguiente
                     </button>
                 </div>
-                <PlaylistTrackList songs={displayedTracks} onSelect={handleTrackClick} />
+                <PlaylistTrackList songs={displayedTracks} onSelect={handleTrackClick} onDelete={deleteTrack} />
             </div>
         </div>
     )

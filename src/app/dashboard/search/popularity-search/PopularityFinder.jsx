@@ -19,8 +19,8 @@ export default function PopularityFinder() {
     const [loading, setLoading] = useState(false)
     const pathname = usePathname()
 
-    const removeTrack = (trackId) => {
-        setTracks(tracks.filter(t => t.id !== trackId))
+    const removeTrack = (track) => {
+        setTracks(tracks.filter(t => t.id !== track.id))
     }
 
     const findSongs = async () => {

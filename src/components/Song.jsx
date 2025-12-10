@@ -17,7 +17,7 @@ export default function Song( {data, onFavourite, onDelete } ) {
 
     const handleDelete = (e) => {
         e.stopPropagation()
-        onDelete(data.id)
+        onDelete(data)
     }
 
     const handleFavourite = (e) => {
