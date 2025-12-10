@@ -17,12 +17,9 @@ export default function MoodFinder() {
         "danceability": {min:0,max:1},
         "acousticness": {min:0,max:1}
     })
-    const [playlists, setPlaylists] = useState([])
-    const [filteredPlaylist, setFilteredPlaylist] = useState(null)
     const [isOpen, setIsOpen] = useState(false)
     const [selectedTrack, setSelectedTrack] = useState(null)
     const [loading, setLoading] = useState(false)
-    const pathname = usePathname()
     const [confirmMsg,setConfirmMsg] = useState("")
     const [showConfirmMsg, setShowConfirmMsg] = useState(false)
     
@@ -40,40 +37,36 @@ export default function MoodFinder() {
         setLoading(true)
         try {
             setTracks([])
-            if (!filteredPlaylist) return
-
             let allTracks = []
-            let offset = 0
-
-            while (offset < filteredPlaylist.tracks.total) {
-                const data = await spotifyRequest(`https://api.spotify.com/v1/playlists/${filteredPlaylist.id}/tracks?limit=100&offset=${offset}`)
-                const track_data = data?.items || []
-                const track_list = track_data.map(t => t.track).filter(t => t !== null)
-                allTracks = [...allTracks,...track_list]
-                offset += 100
+            const mood_genres = []
+            if (mood.energy.min >= 0.6 && mood.danceability.min >= 0.7 && mood.valence.min >= 0.4) {
+                mood_genres.push("reggaeton")
+            }
+            if (mood.energy.min >= 0.4 && mood.energy.max <= 0.8 && mood.valence.min >= 0.5) {
+                mood_genres.push("pop")
+            }
+            if (mood.energy.min >= 0.7 && mood.danceability.min >= 0.6) {
+                mood_genres.push("edm")
+            }
+            if (mood.energy.max <= 0.6 && mood.valence.max <= 0.6) {
+                mood_genres.push("indie")
+            }
+            if (mood.energy.max <= 0.6 && mood.valence.max <= 0.6) {
+                mood_genres.push("acoustic")
             }
 
-            const filtered_list = allTracks.filter(t => {
-                return Object.keys(mood).every(key =>{
-                    const randNum = Math.random()
-                    const min = mood[key]?.min || 0
-                    const max = mood[key]?.max || 1
-                    return randNum >= min && randNum <= max
-                })
-            })
-            setTracks(filtered_list)
+            for (const genre of mood_genres) {
+                const data = await spotifyRequest(`https://api.spotify.com/v1/search?type=track&q=genre:${genre}&limit=20`)
+                const track_data = data?.tracks?.items || []
+                allTracks = [...allTracks, ...track_data]
+            }
+
+            setTracks(allTracks)
         } finally {
             setLoading(false)
         }
         
     }
-
-    useEffect(() => {
-        const stored = localStorage.getItem('playlists')
-        const stored_playlists = JSON.parse(stored) || []
-
-        setPlaylists(stored_playlists)
-    },[pathname])
 
     const saveTrack = (track) => {
         setSelectedTrack(track)
@@ -97,11 +90,6 @@ export default function MoodFinder() {
 
     return (
         <div className="w-full bg-[#191414] my-2 p-4 rounded-2xl">
-            <div>
-                <h1 className="text-2xl font-bold text-white text-center">Elegir Playlist A Filtrar</h1>
-                <PlaylistGrid playlists={playlists} onSelect={setFilteredPlaylist}/>
-            </div>
-            <h1 className="text-xl font-bold text-white text-center">Playlist Seleccionada: {filteredPlaylist?.name || "none"}</h1>
             <div className="flex flex-col items-center ">
                 <MoodWidget selectedItems={mood} onSelect={setMood}/>
                 <button className="mt-4 px-4 py-2 bg-[#1DB954] text-black font-semibold rounded-xl 
