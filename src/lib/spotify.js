@@ -25,7 +25,33 @@ export async function generatePlaylist(preferences) {
     } else {
       return -1
     }
-  } 
+  }
+  
+  //6. Filtrar por estado de animo
+  if (mood) {
+    const mood_genres = []
+    if (mood.energy.min >= 0.6 && mood.danceability.min >= 0.7 && mood.valence.min >= 0.4) {
+      mood_genres.push("reggaeton")
+    }
+    if (mood.energy.min >= 0.4 && mood.energy.max <= 0.8 && mood.valence.min >= 0.5) {
+      mood_genres.push("pop")
+    }
+    if (mood.energy.min >= 0.7 && mood.danceability.min >= 0.6) {
+      mood_genres.push("edm")
+    }
+    if (mood.energy.max <= 0.6 && mood.valence.max <= 0.6) {
+      mood_genres.push("indie")
+    }
+    if (mood.energy.max <= 0.6 && mood.valence.max <= 0.6) {
+      mood_genres.push("acoustic")
+    }
+
+    for (const genre of mood_genres) {
+      const data = await spotifyRequest(`https://api.spotify.com/v1/search?type=track&q=genre:${genre}&limit=20`)
+      const track_data = data?.tracks?.items || []
+      allTracks = [...allTracks, ...track_data]
+    } 
+  }
   
   // 3. Filtrar por década
   if (decades && decades.length > 0) {
@@ -53,17 +79,7 @@ export async function generatePlaylist(preferences) {
     new Map(allTracks.map(t => [t.id, t])).values()
   )
 
-  //6. Filtrar por estado de animo
-  if (mood) {
-    allTracks = allTracks.filter(t => {
-      return Object.keys(mood).every(key =>{
-        const randNum = Math.random()
-        const min = mood[key]?.min || 0
-        const max = mood[key]?.max || 1
-        return randNum >= min && randNum <= max
-      })
-    })
-  }
+
 
   //7. Añadir canciones del track widget
   let playlist = allTracks.slice(0,50)
