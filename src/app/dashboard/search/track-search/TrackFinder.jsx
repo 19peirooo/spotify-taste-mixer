@@ -9,6 +9,14 @@ export default function TrackFinder() {
     const [tracks, setTracks] = useState([])
     const [isOpen, setIsOpen] = useState(false)
     const [selectedTrack, setSelectedTrack] = useState(null)
+    const [confirmMsg,setConfirmMsg] = useState("")
+    const [showConfirmMsg, setShowConfirmMsg] = useState(false)
+    
+    const displayConfirmMsg = (msg) => {
+        setConfirmMsg(msg)
+        setShowConfirmMsg(true)
+        setTimeout(() => setShowConfirmMsg(false),3000)
+    }
 
     const addTrack = (track) => {
         setTracks([...tracks,track])
@@ -26,6 +34,7 @@ export default function TrackFinder() {
     const handleClose = () => {
         setSelectedTrack(null)
         setIsOpen(false)
+        displayConfirmMsg("Cancion Guardada con Exito")
     }
 
     return (
@@ -33,7 +42,13 @@ export default function TrackFinder() {
             <TrackWidget onSelect={addTrack} selectedItems={tracks}/>
             <h2 className="text-2xl font-bold text-white mt-2">Canciones Seleccionadas: </h2>
             <SongList songs={tracks} onSelect={saveTrack} onDelete={removeTrack} />
-            {isOpen && selectedTrack && <PlaylistMenu track={selectedTrack} onClose={handleClose} isOpen={isOpen}/>}    
+            {isOpen && selectedTrack && <PlaylistMenu track={selectedTrack} onClose={handleClose} isOpen={isOpen}/>}
+            {showConfirmMsg && (
+                <div className="fixed bottom-5 left-1/2 -translate-x-1/2 bg-green-700 text-white px-4 py-2 rounded shadow-lg
+                                transform transition-all duration-500 opacity-100 animate-slide-in">
+                    {confirmMsg}
+                </div>
+            )}     
         </div>
     )
 }

@@ -23,6 +23,14 @@ export default function MoodFinder() {
     const [selectedTrack, setSelectedTrack] = useState(null)
     const [loading, setLoading] = useState(false)
     const pathname = usePathname()
+    const [confirmMsg,setConfirmMsg] = useState("")
+    const [showConfirmMsg, setShowConfirmMsg] = useState(false)
+    
+    const displayConfirmMsg = (msg) => {
+        setConfirmMsg(msg)
+        setShowConfirmMsg(true)
+        setTimeout(() => setShowConfirmMsg(false),3000)
+    }
 
     const removeTrack = (track) => {
         setTracks(tracks.filter(t => t.id !== track.id))
@@ -75,6 +83,7 @@ export default function MoodFinder() {
     const handleClose = () => {
         setSelectedTrack(null)
         setIsOpen(false)
+        displayConfirmMsg("Cancion guardada con exito")
     }
 
     if (loading) {
@@ -101,6 +110,12 @@ export default function MoodFinder() {
                 <SongList songs={tracks} onSelect={saveTrack} onDelete={removeTrack} />
                 {isOpen && selectedTrack && <PlaylistMenu track={selectedTrack} onClose={handleClose} isOpen={isOpen}/>}    
             </div>
+            {showConfirmMsg && (
+                <div className="fixed bottom-5 left-1/2 -translate-x-1/2 bg-green-700 text-white px-4 py-2 rounded shadow-lg
+                                transform transition-all duration-500 opacity-100 animate-slide-in">
+                    {confirmMsg}
+                </div>
+            )} 
         </div>
         
     )

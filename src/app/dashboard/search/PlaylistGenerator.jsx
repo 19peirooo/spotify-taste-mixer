@@ -37,6 +37,25 @@ export default function PlaylistGenerator() {
         "acousticness": {min:0,max:1}
     })
     const [loading,setLoading] = useState(false)
+    const [errMsg,setErrMsg] = useState("")
+    const [showErrMsg, setShowErrMsg] = useState(false)
+    const [confirmMsg,setConfirmMsg] = useState("")
+    const [showConfirmMsg, setShowConfirmMsg] = useState(false)
+    
+    const displayConfirmMsg = (msg) => {
+        setConfirmMsg(msg)
+        setShowConfirmMsg(true)
+        setTimeout(() => setShowConfirmMsg(false),3000)
+    }
+
+    const displayErrMsg = (msg) => {
+        setErrMsg(msg)
+        setShowErrMsg(true)
+        setTimeout(() => setShowErrMsg(false),3000)
+
+    }
+
+    
 
     const addArtist = (artist) => {
         setArtists([...artists,artist])
@@ -81,14 +100,23 @@ export default function PlaylistGenerator() {
                 mood: activeWidgets.mood ? mood : null
             }
             const generatedPlaylist = await generatePlaylist(preferences)
-            setPlaylist(generatedPlaylist)
+            if (generatedPlaylist === -1) {
+                displayErrMsg("Solo se puede añadir de 3 a 5 generos")
+                setPlaylist([])
+            } else {
+                setPlaylist(generatedPlaylist)
+            }
+            
         } finally {
             setLoading(false)
         }
     }
 
     const savePlaylist = async  (name,description) => {
-        if (!name) return
+        if (!name) {
+            displayErrMsg("La Playlist necesita un nombre")
+            return
+        }
 
         const token = getAccessToken()
 
@@ -122,7 +150,7 @@ export default function PlaylistGenerator() {
         const playlist_data = await spotifyRequest(`https://api.spotify.com/v1/playlists/${data.id}`)
         storedPlaylists.push(playlist_data)
         localStorage.setItem("playlists", JSON.stringify(storedPlaylists));
-
+        displayConfirmMsg("Playlist creada con exito")
     }
 
     if (loading) {
@@ -243,7 +271,18 @@ export default function PlaylistGenerator() {
                     </>
                 )}
             </div>
-
+            {showErrMsg && (
+                <div className="fixed bottom-5 left-1/2 -translate-x-1/2 bg-red-500 text-white px-4 py-2 rounded shadow-lg
+                                transform transition-all duration-500 opacity-100 animate-slide-in">
+                    {errMsg}
+                </div>
+            )}
+            {showConfirmMsg && (
+                <div className="fixed bottom-5 left-1/2 -translate-x-1/2 bg-green-700 text-white px-4 py-2 rounded shadow-lg
+                                transform transition-all duration-500 opacity-100 animate-slide-in">
+                    {confirmMsg}
+                </div>
+            )} 
         </div>
     )
 

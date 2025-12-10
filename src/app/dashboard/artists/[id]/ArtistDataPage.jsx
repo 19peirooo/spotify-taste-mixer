@@ -17,6 +17,14 @@ export default function ArtistDataPage({ id }) {
     const [isOpen, setIsOpen] = useState(false)
     const [selectedTrack, setSelectedTrack] = useState(null)
     const router = useRouter()
+    const [confirmMsg,setConfirmMsg] = useState("")
+    const [showConfirmMsg, setShowConfirmMsg] = useState(false)
+    
+    const displayConfirmMsg = (msg) => {
+        setConfirmMsg(msg)
+        setShowConfirmMsg(true)
+        setTimeout(() => setShowConfirmMsg(false),3000)
+    }
 
     useEffect(() => {
         async function load() {
@@ -47,6 +55,7 @@ export default function ArtistDataPage({ id }) {
     const handleClose = () => {
         setSelectedTrack(null)
         setIsOpen(false)
+        displayConfirmMsg("Cancion Guardada con Exito")
     }
 
     if (loading) {
@@ -93,6 +102,12 @@ export default function ArtistDataPage({ id }) {
                 <TopTracksList songs={artist.top_tracks} onSelect={saveTrack} />
                 {isOpen && selectedTrack && <PlaylistMenu track={selectedTrack} onClose={handleClose} isOpen={isOpen}/>}
             </div>
+            {showConfirmMsg && (
+                <div className="fixed bottom-5 left-1/2 -translate-x-1/2 bg-green-700 text-white px-4 py-2 rounded shadow-lg
+                                transform transition-all duration-500 opacity-100 animate-slide-in">
+                    {confirmMsg}
+                </div>
+            )} 
         </div>
     )
 

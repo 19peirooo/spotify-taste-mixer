@@ -11,16 +11,42 @@ export default function GenreFinder() {
     const [isOpen, setIsOpen] = useState(false)
     const [selectedTrack, setSelectedTrack] = useState(null)
     const [loading, setLoading] = useState(null)
+    const [errMsg,setErrMsg] = useState("")
+    const [showErrMsg, setShowErrMsg] = useState(false)
+    const [confirmMsg,setConfirmMsg] = useState("")
+    const [showConfirmMsg, setShowConfirmMsg] = useState(false)
+    
+    const displayConfirmMsg = (msg) => {
+        setConfirmMsg(msg)
+        setShowConfirmMsg(true)
+        setTimeout(() => setShowConfirmMsg(false),3000)
+    }
 
     const removeTrack = (track) => {
         setTracks(tracks.filter(t => t.id !== track.id))
+    }
+
+    const displayErrMsg = (msg) => {
+        setErrMsg(msg)
+        setShowErrMsg(true)
+        setTimeout(() => setShowErrMsg(false),3000)
+
     }
 
     const findSongs = async () => {
         setLoading(true)
         try {
             setTracks([])
-            if (genres.length < 3 || genres.length > 5) return;
+            if (genres.length < 3) {
+                displayErrMsg("Se necesitan 3 o mas generos para poder buscar por genero")
+                return
+            }
+
+            if (genres.length > 5) {
+                displayErrMsg("Se necesitan menos de 5 generos para poder buscar por genero")
+                return
+            }
+
 
             let allTracks = []
 
@@ -43,6 +69,7 @@ export default function GenreFinder() {
     const handleClose = () => {
         setSelectedTrack(null)
         setIsOpen(false)
+        displayConfirmMsg("Cancion Guardada con Exito")
     }
 
     if (loading) {
@@ -61,7 +88,19 @@ export default function GenreFinder() {
                            hover:bg-[#1ed760] transition cursor-pointer shadow-md" onClick={findSongs}>Buscar Canciones</button>
             <h2 className="text-2xl font-bold text-white mt-2">Canciones Encontradas: </h2>
             <SongList songs={tracks} onSelect={saveTrack} onDelete={removeTrack} />
-            {isOpen && selectedTrack && <PlaylistMenu track={selectedTrack} onClose={handleClose} isOpen={isOpen}/>}       
+            {isOpen && selectedTrack && <PlaylistMenu track={selectedTrack} onClose={handleClose} isOpen={isOpen}/>}
+            {showErrMsg && (
+                <div className="fixed bottom-5 left-1/2 -translate-x-1/2 bg-red-500 text-white px-4 py-2 rounded shadow-lg
+                                transform transition-all duration-500 opacity-100 animate-slide-in">
+                    {errMsg}
+                </div>
+            )}
+            {showConfirmMsg && (
+                <div className="fixed bottom-5 left-1/2 -translate-x-1/2 bg-green-700 text-white px-4 py-2 rounded shadow-lg
+                                transform transition-all duration-500 opacity-100 animate-slide-in">
+                    {confirmMsg}
+                </div>
+            )}        
         </div>
     )
 }

@@ -15,13 +15,17 @@ export async function generatePlaylist(preferences) {
   }
   
   // 2. Buscar por géneros
-  if (genres && genres.length >= 3 && genres.length <= 5) {  
-    for (const genre of genres) {
-      const data = await spotifyRequest(`https://api.spotify.com/v1/search?type=track&q=genre:${genre}&limit=20`)
-      const track_data = data?.tracks?.items || []
-      allTracks = [...allTracks, ...track_data]
+  if (genres) { 
+    if (genres.length >= 3 && genres.length <= 5) {
+      for (const genre of genres) {
+        const data = await spotifyRequest(`https://api.spotify.com/v1/search?type=track&q=genre:${genre}&limit=20`)
+        const track_data = data?.tracks?.items || []
+        allTracks = [...allTracks, ...track_data]
+      } 
+    } else {
+      return -1
     }
-  }
+  } 
   
   // 3. Filtrar por década
   if (decades && decades.length > 0) {
@@ -51,7 +55,7 @@ export async function generatePlaylist(preferences) {
 
   //6. Filtrar por estado de animo
   if (mood) {
-    allTracks.filter(t => {
+    allTracks = allTracks.filter(t => {
       return Object.keys(mood).every(key =>{
         const randNum = Math.random()
         const min = mood[key]?.min || 0

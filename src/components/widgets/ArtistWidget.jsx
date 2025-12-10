@@ -9,6 +9,15 @@ import ArtistSearchList from "../ArtistSearchList"
 export default function ArtistWidget({ onSelect, selectedItems }) {
 
     const [artists, setArtists] = useState([])
+    const [errMsg,setErrMsg] = useState("")
+    const [showErrMsg, setShowErrMsg] = useState(false)
+
+    const displayErrMsg = (msg) => {
+        setErrMsg(msg)
+        setShowErrMsg(true)
+        setTimeout(() => setShowErrMsg(false),3000)
+
+    }
 
     const handleSearch = async (query) => {
         if (!query) {
@@ -27,6 +36,14 @@ export default function ArtistWidget({ onSelect, selectedItems }) {
             onSelect(artist)
         }
 
+        if (exists) {
+            displayErrMsg("Artista ya añadido")
+        }
+
+        if (selectedItems.length >= 5) {
+            displayErrMsg("Solo se puede añadir 5 artistas")
+        }
+
     }
 
     return (
@@ -35,6 +52,12 @@ export default function ArtistWidget({ onSelect, selectedItems }) {
             <h2 className="text-2xl font-bold text-white text-center">Busca a tu artista favorito</h2>
             <DebouncedSearchBar onSearch={handleSearch}></DebouncedSearchBar>
             <ArtistSearchList artists={artists} onSelect={handleSelect}/>
+            {showErrMsg && (
+                <div className="fixed bottom-5 left-1/2 -translate-x-1/2 bg-red-500 text-white px-4 py-2 rounded shadow-lg
+                                transform transition-all duration-500 opacity-100 animate-slide-in">
+                    {errMsg}
+                </div>
+            )}  
         </>
 
     )

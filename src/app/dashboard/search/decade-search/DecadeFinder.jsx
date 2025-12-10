@@ -11,6 +11,14 @@ export default function DecadeFinder() {
     const [isOpen, setIsOpen] = useState(false)
     const [selectedTrack, setSelectedTrack] = useState(null)
     const [loading, setLoading] = useState(false)
+    const [confirmMsg,setConfirmMsg] = useState("")
+    const [showConfirmMsg, setShowConfirmMsg] = useState(false)
+    
+    const displayConfirmMsg = (msg) => {
+        setConfirmMsg(msg)
+        setShowConfirmMsg(true)
+        setTimeout(() => setShowConfirmMsg(false),3000)
+    }
 
     const removeTrack = (track) => {
         setTracks(tracks.filter(t => t.id !== track.id))
@@ -48,6 +56,7 @@ export default function DecadeFinder() {
     const handleClose = () => {
         setSelectedTrack(null)
         setIsOpen(false)
+        displayConfirmMsg("Cancion Añadida con Exito")
     }
     
     if (loading) {
@@ -67,6 +76,12 @@ export default function DecadeFinder() {
             {isOpen && selectedTrack && <PlaylistMenu track={selectedTrack} onClose={handleClose} isOpen={isOpen}/>}    
             <button className="mt-4 px-4 py-2 bg-[#1DB954] text-black font-semibold rounded-xl 
                            hover:bg-[#1ed760] transition cursor-pointer shadow-md" onClick={findSongs}>Buscar Canciones</button>
+            {showConfirmMsg && (
+                <div className="fixed bottom-5 left-1/2 -translate-x-1/2 bg-green-700 text-white px-4 py-2 rounded shadow-lg
+                                transform transition-all duration-500 opacity-100 animate-slide-in">
+                    {confirmMsg}
+                </div>
+            )} 
         </div>
     )
 }
